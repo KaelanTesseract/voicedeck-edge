@@ -70,6 +70,10 @@ internal sealed class HubController
     /// <summary>Runs a validated widget command on the worker and returns its result data.</summary>
     public Task<JsonNode?> ExecuteAsync(WidgetCommand cmd)
     {
+        // Page turning needs no Discord and must not wait behind voice commands.
+        if (cmd.Op == "edge.page")
+            return EdgePages.Turn(cmd.Next!.Value) ? Task.FromResult<JsonNode?>(null) : Task.FromException<JsonNode?>(new OpException("busy"));
+
         var tcs = new TaskCompletionSource<JsonNode?>(TaskCreationOptions.RunContinuationsAsynchronously);
         // Lists only read from Discord and can take a moment – they must not hold up speaking/voice events.
         Func<Task> work = async () =>

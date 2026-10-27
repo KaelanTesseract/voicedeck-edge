@@ -67,7 +67,7 @@ Done! A purple **V** in the taskbar shows that the helper (the *hub*) is running
 - **Leave:** press and hold *Leave* until the red bar is full. (Can be switched to a single tap in the settings.)
 - **Direct messages:** speech-bubble icon at the top of the server column. Conversations appear as soon as someone writes to you while the hub is running.
 - **Background picture and your own colours:** in the widget settings, switch on **Custom Style** first.
-- **Switching pages on the Edge:** iCUE doesn't let you swipe over touch widgets (Corsair's own included). Swipe on a free area or over a non-touch widget.
+- **Switching pages on the Edge:** iCUE doesn't pass swipes over touch widgets through. Voicedeck Edge turns the page for you – set it up once: in iCUE, open your **XENEON EDGE → device settings** and record **Ctrl + Alt + Shift + Left arrow** for *Previous display screen* and **Ctrl + Alt + Shift + Right arrow** for *Next display screen*. Then just swipe left or right on the widget.
 
 ## Settings (in iCUE)
 
@@ -75,6 +75,7 @@ Done! A purple **V** in the taskbar shows that the helper (the *hub*) is running
 |---|---|
 | Voice layout | Tiles or list |
 | Leave: press and hold | Protects against leaving by accident (on by default) |
+| Swipe to change pages | Swipe left/right on the widget to turn Edge pages (needs the iCUE shortcut from the tips, on by default) |
 | Show chat | Turns chat and text channels on or off |
 | Private mode | Starts with the chat hidden (also switchable in the widget) |
 | Theme | Automatic (your iCUE colours), dark or light |

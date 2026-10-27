@@ -134,6 +134,13 @@ function start(demo) {
   app.demo = demo;
   applyTexts();
   applyStyles();
+  VoicedeckPageSwipe.init({
+    enabled: function () { return getIcueProperty('pageSwipe') !== false; },
+    turn: function (dir) {
+      if (app.demo || !app.client) return;
+      app.client.request('edge.page', { dir: dir }).catch(function () { /* throttled or hub offline */ });
+    }
+  });
 
   if (demo) {
     app.connection = 'ready';

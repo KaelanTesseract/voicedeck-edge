@@ -56,7 +56,13 @@ Discord erlaubt die Steuerung nur über eine *eigene* App. Das klingt technisch,
 - **Lautstärke einer Person:** auf die Person tippen → Regler 0–200 %, „Für mich stumm“, „Zurücksetzen“.
 - **Privatmodus:** Knopf **„Sichtbar/Privat“ oben im Chat** oder in den Widget-Einstellungen. Chat, Bilder und Emojis bleiben unkenntlich, bis du darauftippst – gut zum Streamen.
 - **Hintergrundbild, eigene Farben, Transparenz:** in den Widget-Einstellungen **„Benutzerdefinierter Stil“** einschalten. Ohne ihn übernimmt das Widget die Farben deiner iCUE-Seite. „Design“ kann trotzdem **Dunkel** oder **Hell** erzwingen.
-- **Seiten wechseln auf der Edge:** Über Touch-Widgets – auch Corsairs eigenen – kann man in iCUE nicht wischen. Wische auf einer freien Fläche oder über einem nicht-interaktiven Widget; lass am besten etwas Platz neben Voicedeck Edge.
+- **Seiten wechseln auf der Edge (Wischen):** iCUE gibt Wischgesten über Touch-Widgets nicht weiter. Voicedeck Edge erkennt das Wischen selbst und drückt für dich das iCUE-Tastenkürzel zum Umblättern. Einmal einrichten:
+  1. In iCUE auf deine **XENEON EDGE** klicken und **Geräte-Einstellungen** öffnen.
+  2. Unter *Bildschirmeinrichtung* in **Vorheriger Anzeigebildschirm** klicken und **Strg + Alt + Umschalt + Pfeil links** drücken.
+  3. In **Nächster Anzeigebildschirm** klicken und **Strg + Alt + Umschalt + Pfeil rechts** drücken.
+  4. Fertig: Auf dem Widget nach links wischen = nächste Seite, nach rechts = vorherige. Ein kleiner Pfeil bestätigt das Wischen.
+
+  Abschalten lässt es sich in den Widget-Einstellungen („Wischen wechselt die Seite“). Der Hub drückt nur genau diese beiden Kürzel und nur, wenn du auf dem Widget wischst.
 
 ### Wenn etwas nicht klappt
 
@@ -131,7 +137,13 @@ Discord only allows control through *your own* app. It sounds technical but is j
 - **Someone's volume:** tap the person → slider 0–200 %, "Mute for me", "Reset".
 - **Private mode:** **"Visible/Private" button at the top of the chat** or in the widget settings. Chat, images and emojis stay unreadable until tapped – good for streaming.
 - **Background image, own colours, transparency:** switch on **"Custom Style"** in the widget settings. Without it, the widget uses your iCUE page colours; "Theme" can still force **Dark** or **Light**.
-- **Switching pages on the Edge:** iCUE does not let you swipe over touch widgets (Corsair's own included). Swipe on an empty area or over a non-interactive widget; leaving some space next to Voicedeck Edge helps.
+- **Switching pages on the Edge (swipe):** iCUE does not pass swipes over touch widgets through. Voicedeck Edge detects the swipe itself and presses iCUE's page shortcut for you. Set it up once:
+  1. In iCUE, click your **XENEON EDGE** and open **Device settings**.
+  2. Under *Screen setup*, click **Previous display screen** and press **Ctrl + Alt + Shift + Left arrow**.
+  3. Click **Next display screen** and press **Ctrl + Alt + Shift + Right arrow**.
+  4. Done: swipe left on the widget for the next page, right for the previous one. A small arrow confirms the swipe.
+
+  You can turn this off in the widget settings ("Swipe to change pages"). The hub only ever presses these two shortcuts, and only when you swipe on the widget.
 
 ### Troubleshooting
 

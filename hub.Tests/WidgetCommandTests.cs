@@ -63,4 +63,13 @@ public class WidgetCommandTests
         Assert.True(Parse($$"""{"op":"user.setMute","userId":"{{Id}}","mute":true}""").Mute);
         Assert.Equal("invalid_args", ErrorOf($$"""{"op":"user.setMute","userId":"{{Id}}","mute":"yes"}"""));
     }
+
+    [Fact]
+    public void Page_turn_only_accepts_next_or_prev()
+    {
+        Assert.True(Parse("""{"op":"edge.page","dir":"next"}""").Next);
+        Assert.False(Parse("""{"op":"edge.page","dir":"prev"}""").Next);
+        Assert.Equal("invalid_args", ErrorOf("""{"op":"edge.page"}"""));
+        Assert.Equal("invalid_args", ErrorOf("""{"op":"edge.page","dir":"ctrl+alt+del"}"""));
+    }
 }

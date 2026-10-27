@@ -189,6 +189,37 @@ img.blur-up.is-broken { display: none; }
 .lightbox img { max-width: 94%; max-height: 94%; border-radius: var(--radius-small); object-fit: contain; transform: scale(0.96); transition: transform 300ms var(--ease-out); }
 .lightbox.is-open img { transform: none; }
 
+/* Page swipe: a chevron flashes on the side the next page comes from */
+.page-hint {
+  position: absolute;
+  top: 50%;
+  z-index: 7;
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 9);
+  height: calc(var(--u) * 9);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  opacity: 0;
+  pointer-events: none;
+}
+.page-hint .icon { width: 55%; height: 55%; }
+.page-hint.next { right: calc(var(--u) * 2); transform: translateY(-50%); }
+.page-hint.prev { left: calc(var(--u) * 2); transform: translateY(-50%) scaleX(-1); }
+.page-hint.show { animation: page-hint 520ms var(--ease-out); }
+@keyframes page-hint {
+  0% { opacity: 0; translate: 0 0; }
+  30% { opacity: 1; }
+  100% { opacity: 0; translate: calc(var(--u) * -3) 0; }
+}
+.page-hint.prev.show { animation-name: page-hint-prev; }
+@keyframes page-hint-prev {
+  0% { opacity: 0; translate: 0 0; }
+  30% { opacity: 1; }
+  100% { opacity: 0; translate: calc(var(--u) * 3) 0; }
+}
+
 /* ---------- Reduced motion: the information still arrives, the trip is skipped ---------- */
 
 @media (prefers-reduced-motion: reduce) {

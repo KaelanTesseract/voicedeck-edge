@@ -11,13 +11,15 @@ internal sealed record WidgetCommand(
     string? UserId = null,
     int? Volume = null,
     bool? Mute = null,
-    string? Mode = null)
+    string? Mode = null,
+    bool? Next = null)
 {
     public static readonly IReadOnlySet<string> KnownOps = new HashSet<string>
     {
         "voice.toggleMute", "voice.toggleDeaf", "voice.setMode", "voice.leave", "voice.join",
         "user.setVolume", "user.setMute", "user.reset",
         "guilds.list", "channels.list", "chat.open", "chat.close",
+        "edge.page",
     };
 
     /// <summary>Validates a widget message strictly; throws <see cref="OpException"/> on anything unexpected.</summary>
@@ -35,6 +37,12 @@ internal sealed record WidgetCommand(
             "user.setVolume" => new WidgetCommand(op, UserId: Snowflake(msg, "userId"), Volume: ParseVolume(msg)),
             "user.setMute" => new WidgetCommand(op, UserId: Snowflake(msg, "userId"), Mute: Flag(msg, "mute")),
             "user.reset" => new WidgetCommand(op, UserId: Snowflake(msg, "userId")),
+            "edge.page" => new WidgetCommand(op, Next: msg.Str("dir") switch
+            {
+                "next" => true,
+                "prev" => false,
+                _ => throw new OpException("invalid_args"),
+            }),
             _ => new WidgetCommand(op),
         };
     }

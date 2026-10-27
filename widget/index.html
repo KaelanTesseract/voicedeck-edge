@@ -9,6 +9,7 @@
   <meta name="x-icue-property" content="voiceLayout" data-label="tr('Voice Layout')" data-type="tab-buttons"
         data-default="'tiles'" data-values="[{'key':'tiles','value':tr('Tiles')},{'key':'list','value':tr('List')}]" />
   <meta name="x-icue-property" content="confirmLeave" data-label="tr('Hold to Leave')" data-type="switch" data-default="true" />
+  <meta name="x-icue-property" content="pageSwipe" data-label="tr('Swipe to Change Pages')" data-type="switch" data-default="true" />
   <meta name="x-icue-property" content="showChat" data-label="tr('Show Chat')" data-type="switch" data-default="true" />
   <meta name="x-icue-property" content="privateChat" data-label="tr('Private Mode')" data-type="switch" data-default="false" />
 
@@ -30,7 +31,7 @@
 
   <script id="x-icue-groups" type="application/json">
   [
-    { "title": "tr('Voicedeck Edge')", "properties": ["voiceLayout", "confirmLeave", "showChat", "privateChat"], "info": "tr('Requires the Voicedeck Edge Hub on this PC.')" },
+    { "title": "tr('Voicedeck Edge')", "properties": ["voiceLayout", "confirmLeave", "pageSwipe", "showChat", "privateChat"], "info": "tr('Requires the Voicedeck Edge Hub on this PC.')" },
     { "title": "tr('Widget Personalization')", "properties": ["textColor", "accentColor", "backgroundColor", "backgroundMedia", "bgBrightness", "glassBlur", "transparency", "theme", "textScale"] }
   ]
   </script>
@@ -122,6 +123,7 @@
       </div>
     </div>
 
+    <div class="page-hint" id="page-hint" aria-hidden="true"><svg class="icon"><use href="#i-chevron" /></svg></div>
     <div class="lightbox" id="lightbox" hidden><img alt="" id="lightbox-img" /></div>
 
     <div class="popup-backdrop" id="member-popup" hidden>
@@ -161,6 +163,7 @@
     <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-dm" viewBox="0 0 24 24"><path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H9l-4.5 3.5V17H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z" fill="currentColor"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
   </svg>
 
@@ -169,6 +172,7 @@
   <script src="scripts/demo.js"></script>
   <script src="scripts/media-background.js"></script>
   <script src="scripts/motion.js"></script>
+  <script src="scripts/page-swipe.js"></script>
   <script src="scripts/channels.js"></script>
   <script src="scripts/chat.js"></script>
   <script src="scripts/app.js"></script>

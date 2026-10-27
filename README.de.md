@@ -67,7 +67,7 @@ Fertig! Ein lila **V** in der Taskleiste zeigt, dass das Hilfsprogramm (der *Hub
 - **Verlassen:** *Verlassen* gedrückt halten, bis der rote Balken voll ist. (Lässt sich in den Einstellungen auf einfaches Tippen umstellen.)
 - **Direktnachrichten:** Sprechblasen-Symbol oben in der Server-Spalte. Unterhaltungen erscheinen, sobald dir jemand schreibt, während der Hub läuft.
 - **Hintergrundbild und eigene Farben:** in den Widget-Einstellungen zuerst **Benutzerdefinierter Stil** einschalten.
-- **Seiten wechseln auf der Edge:** Über Touch-Widgets – auch Corsairs eigenen – kann man in iCUE nicht wischen. Wische auf einer freien Fläche oder über einem Widget ohne Touch.
+- **Seiten wechseln auf der Edge:** iCUE reicht Wischgesten über Touch-Widgets nicht weiter. Voicedeck Edge blättert deshalb selbst um – einmal einrichten: In iCUE **XENEON EDGE → Geräte-Einstellungen** öffnen und bei *Vorheriger Anzeigebildschirm* **Strg + Alt + Umschalt + Pfeil links**, bei *Nächster Anzeigebildschirm* **Strg + Alt + Umschalt + Pfeil rechts** aufnehmen. Danach einfach auf dem Widget nach links oder rechts wischen.
 
 ## Einstellungen (in iCUE)
 
@@ -75,6 +75,7 @@ Fertig! Ein lila **V** in der Taskleiste zeigt, dass das Hilfsprogramm (der *Hub
 |---|---|
 | Darstellung Sprachkanal | Kacheln oder Liste |
 | Verlassen: gedrückt halten | Schützt vor versehentlichem Verlassen (Standard: an) |
+| Wischen wechselt die Seite | Auf dem Widget nach links/rechts wischen blättert die Edge-Seiten um (braucht das iCUE-Kürzel aus den Tipps, Standard: an) |
 | Chat anzeigen | Chat und Textkanäle an oder aus |
 | Privatmodus | Chat startet verdeckt (auch im Widget umschaltbar) |
 | Design | Automatisch (deine iCUE-Farben), Dunkel oder Hell |

@@ -21,7 +21,8 @@
       "Light": "Light",
       "Text Size": "Text Size",
       "Automatic": "Automatic",
-      "Hold to Leave": "Leave: press and hold"
+      "Hold to Leave": "Leave: press and hold",
+      "Swipe to Change Pages": "Swipe to change pages (needs iCUE shortcut, see guide)"
     }
   },
   "de": {
@@ -46,7 +47,8 @@
       "Light": "Hell",
       "Text Size": "Textgröße",
       "Automatic": "Automatisch",
-      "Hold to Leave": "Verlassen: gedrückt halten"
+      "Hold to Leave": "Verlassen: gedrückt halten",
+      "Swipe to Change Pages": "Wischen wechselt die Seite (iCUE-Kürzel nötig, siehe Anleitung)"
     }
   }
 }

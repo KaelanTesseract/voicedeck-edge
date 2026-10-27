@@ -1,3 +1,11 @@
+## Voicedeck Edge 0.9.1 (Beta)
+
+**New: swipe to change pages.** iCUE doesn't pass swipes over touch widgets through, so you couldn't leave a page that Voicedeck Edge sits on. Now the widget recognises a left/right swipe and the hub presses iCUE's page shortcut for you. One-time setup in iCUE (XENEON EDGE → device settings): *Previous display screen* = **Ctrl + Alt + Shift + Left arrow**, *Next display screen* = **Ctrl + Alt + Shift + Right arrow**. Details: [docs/SETUP.md](https://github.com/KaelanTesseract/voicedeck-edge/blob/main/docs/SETUP.md#english). Can be switched off in the widget settings.
+
+**Download:** `VoicedeckEdge-Setup-0.9.1.exe` – install over 0.9.0, your sign-in and pairing are kept. Re-import the widget in iCUE (button in the setup assistant or double-click `VoicedeckEdge.icuewidget`).
+
+---
+
 ## Voicedeck Edge 0.9.0 (Beta)
 
 Control Discord from your CORSAIR XENEON EDGE. First public beta.
