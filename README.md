@@ -10,7 +10,7 @@ Free and open source. No account with us, no servers, no tracking.
 
 ![Voicedeck Edge on a XENEON EDGE](docs/images/en/hero.png)
 
-**[⬇ Download the latest version](https://github.com/KaelanTesseract/voicedeck-edge/releases/latest)** · [Setup guide](docs/SETUP.md#english) · [Privacy](PRIVACY.md#english)
+**[⬇ Download the latest version](https://github.com/KaelanTesseract/voicedeck-edge/releases/latest)** · [Setup guide](docs/SETUP.md#english) · [Privacy](PRIVACY.md#english) · [Project page](https://dennis-guse.de/en/projects/voicedeck-edge.html)
 
 ---
 

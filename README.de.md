@@ -10,7 +10,7 @@ Kostenlos und Open Source. Kein Konto bei uns, keine Server, kein Tracking.
 
 ![Voicedeck Edge auf einer XENEON EDGE](docs/images/de/hero.png)
 
-**[⬇ Neueste Version herunterladen](https://github.com/KaelanTesseract/voicedeck-edge/releases/latest)** · [Anleitung](docs/SETUP.md#deutsch) · [Datenschutz](PRIVACY.md#deutsch)
+**[⬇ Neueste Version herunterladen](https://github.com/KaelanTesseract/voicedeck-edge/releases/latest)** · [Anleitung](docs/SETUP.md#deutsch) · [Datenschutz](PRIVACY.md#deutsch) · [Projektseite](https://dennis-guse.de/projekte/voicedeck-edge.html)
 
 ---
 
