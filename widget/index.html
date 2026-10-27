@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tr('Voicedeck Edge')</title>
+  <link rel="icon" type="image/svg+xml" href="resources/icon.svg" />
+
+  <meta name="x-icue-property" content="voiceLayout" data-label="tr('Voice Layout')" data-type="tab-buttons"
+        data-default="'tiles'" data-values="[{'key':'tiles','value':tr('Tiles')},{'key':'list','value':tr('List')}]" />
+  <meta name="x-icue-property" content="confirmLeave" data-label="tr('Hold to Leave')" data-type="switch" data-default="true" />
+  <meta name="x-icue-property" content="showChat" data-label="tr('Show Chat')" data-type="switch" data-default="true" />
+  <meta name="x-icue-property" content="privateChat" data-label="tr('Private Mode')" data-type="switch" data-default="false" />
+
+  <meta name="x-icue-property" content="textColor" data-label="tr('Text Color')" data-type="color" data-default="'#f2f3f5'" />
+  <meta name="x-icue-property" content="accentColor" data-label="tr('Accent Color')" data-type="color" data-default="'#5865f2'" />
+  <meta name="x-icue-property" content="backgroundColor" data-label="tr('Background Color')" data-type="color" data-default="'#1e1f22'" />
+  <meta name="x-icue-property" content="backgroundMedia" data-label="tr('Background Image')" data-type="media-selector"
+        data-filters="['*.png','*.jpg','*.jpeg','*.webp','*.gif']" />
+  <meta name="x-icue-property" content="bgBrightness" data-label="tr('Background Brightness')" data-type="slider"
+        data-default="70" data-min="20" data-max="100" data-step="1" data-unit-label="'%'" />
+  <meta name="x-icue-property" content="glassBlur" data-label="tr('Glass Blur')" data-type="slider"
+        data-default="0" data-min="0" data-max="30" data-step="1" />
+  <meta name="x-icue-property" content="transparency" data-label="tr('Background Transparency')" data-type="slider"
+        data-default="0" data-min="0" data-max="100" data-step="1" data-unit-label="'%'" />
+  <meta name="x-icue-property" content="theme" data-label="tr('Theme')" data-type="tab-buttons"
+        data-default="'auto'" data-values="[{'key':'auto','value':tr('Automatic')},{'key':'dark','value':tr('Dark')},{'key':'light','value':tr('Light')}]" />
+  <meta name="x-icue-property" content="textScale" data-label="tr('Text Size')" data-type="slider"
+        data-default="100" data-min="80" data-max="140" data-step="5" data-unit-label="'%'" />
+
+  <script id="x-icue-groups" type="application/json">
+  [
+    { "title": "tr('Voicedeck Edge')", "properties": ["voiceLayout", "confirmLeave", "showChat", "privateChat"], "info": "tr('Requires the Voicedeck Edge Hub on this PC.')" },
+    { "title": "tr('Widget Personalization')", "properties": ["textColor", "accentColor", "backgroundColor", "backgroundMedia", "bgBrightness", "glassBlur", "transparency", "theme", "textScale"] }
+  ]
+  </script>
+
+  <link rel="stylesheet" type="text/css" href="styles/VoicedeckEdge.css" />
+  <link rel="stylesheet" type="text/css" href="styles/motion.css" />
+</head>
+<body>
+  <div class="widget-root">
+    <div class="widget-background" aria-hidden="true">
+      <div class="bg-color"></div>
+      <div id="media-background"></div>
+    </div>
+
+    <div class="app" id="app">
+      <div class="topbar">
+        <div class="tabs" role="tablist">
+          <span class="tab-thumb" aria-hidden="true"></span>
+          <button class="tab is-active" data-tab="voice" role="tab"></button>
+          <button class="tab" data-tab="channels" role="tab"></button>
+          <button class="tab" data-tab="chat" role="tab"></button>
+        </div>
+      </div>
+
+      <div class="view view-voice" id="view-voice">
+        <div class="voice-header">
+          <div class="voice-title">
+            <svg class="icon voice-title-icon" aria-hidden="true"><use href="#i-speaker" /></svg>
+            <span class="voice-channel" id="voice-channel"></span>
+            <span class="voice-guild" id="voice-guild"></span>
+          </div>
+          <span class="connection-dot" id="connection-dot"></span>
+        </div>
+        <div class="members" id="members"></div>
+        <div class="voice-empty" id="voice-empty" hidden>
+          <svg class="icon voice-empty-icon" aria-hidden="true"><use href="#i-speaker" /></svg>
+          <p class="voice-empty-text" id="voice-empty-text"></p>
+          <button class="pill-button" id="open-channels"></button>
+        </div>
+      </div>
+
+      <div class="view view-channels" id="view-channels">
+        <div class="guilds" id="guilds"></div>
+        <div class="channel-pane">
+          <div class="favorites" id="favorites"></div>
+          <div class="channel-list" id="channel-list"></div>
+          <p class="pane-hint" id="channel-hint"></p>
+        </div>
+      </div>
+
+      <div class="view view-chat" id="view-chat">
+        <div class="chat-header" id="chat-header">
+          <svg class="icon chat-header-icon" aria-hidden="true"><use href="#i-hash" /></svg>
+          <span class="chat-name" id="chat-name"></span>
+          <button class="chat-privacy" id="chat-privacy" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-eye" /></svg><span></span></button>
+        </div>
+        <div class="chat-body" id="chat-body">
+          <div class="chat-messages" id="chat-messages"></div>
+          <div class="private-veil" id="private-veil"></div>
+          <button class="new-items-pill" id="new-items-pill" tabindex="-1"><svg class="icon" aria-hidden="true"><use href="#i-arrow-down" /></svg><span></span></button>
+        </div>
+        <div class="chat-empty" id="chat-empty">
+          <svg class="icon chat-empty-icon" aria-hidden="true"><use href="#i-hash" /></svg>
+          <p class="chat-empty-text" id="chat-empty-text"></p>
+          <button class="pill-button" id="chat-pick"></button>
+        </div>
+      </div>
+
+      <div class="controls" id="controls">
+        <button class="control" id="btn-mute"><svg class="icon" aria-hidden="true"><use href="#i-mic" /></svg><span></span></button>
+        <button class="control" id="btn-deaf"><svg class="icon" aria-hidden="true"><use href="#i-headphones" /></svg><span></span></button>
+        <button class="control" id="btn-mode"><svg class="icon" aria-hidden="true"><use href="#i-wave" /></svg><span></span></button>
+        <button class="control control-leave" id="btn-leave">
+          <span class="leave-face"><svg class="icon" aria-hidden="true"><use href="#i-leave" /></svg><span class="leave-label"></span></span>
+          <span class="leave-face leave-done" aria-hidden="true"><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg></span>
+          <span class="hold-fill" aria-hidden="true"><span class="leave-face"><svg class="icon"><use href="#i-leave" /></svg><span class="leave-label"></span></span></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="offline-badge" id="offline-badge" hidden></div>
+
+    <div class="state-overlay" id="state-overlay">
+      <div class="state-card">
+        <div class="spinner" id="state-spinner"></div>
+        <p class="state-title" id="state-title"></p>
+        <p class="state-hint" id="state-hint"></p>
+        <button class="pill-button" id="state-action" hidden></button>
+      </div>
+    </div>
+
+    <div class="lightbox" id="lightbox" hidden><img alt="" id="lightbox-img" /></div>
+
+    <div class="popup-backdrop" id="member-popup" hidden>
+      <div class="popup" role="dialog">
+        <div class="popup-head">
+          <div class="avatar popup-avatar" id="popup-avatar"></div>
+          <span class="popup-name" id="popup-name"></span>
+          <button class="popup-close" id="popup-close" aria-label="close"><svg class="icon" aria-hidden="true"><use href="#i-close" /></svg></button>
+        </div>
+        <label class="popup-label"><span id="popup-volume-label"></span> <strong id="popup-volume-value"></strong></label>
+        <div class="volume-track">
+          <input type="range" class="volume-slider" id="popup-volume" min="0" max="200" step="1" />
+          <div class="volume-ticks" aria-hidden="true"><i style="left:25%"></i><i style="left:50%"></i><i style="left:75%"></i><i style="left:100%"></i></div>
+        </div>
+        <div class="popup-actions">
+          <button class="pill-button" id="popup-mute"></button>
+          <button class="pill-button pill-secondary" id="popup-reset"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M8 21h8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-mic-off" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M8 21h8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 4l16 16" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-headphones" viewBox="0 0 24 24"><path d="M4 15v-3a8 8 0 0 1 16 0v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="3" y="14" width="5" height="7" rx="2" fill="currentColor"/><rect x="16" y="14" width="5" height="7" rx="2" fill="currentColor"/></symbol>
+    <symbol id="i-headphones-off" viewBox="0 0 24 24"><path d="M4 15v-3a8 8 0 0 1 16 0v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="3" y="14" width="5" height="7" rx="2" fill="currentColor"/><rect x="16" y="14" width="5" height="7" rx="2" fill="currentColor"/><path d="M4 4l16 16" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-wave" viewBox="0 0 24 24"><path d="M4 10v4M8 7v10M12 4v16M16 7v10M20 10v4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+    <symbol id="i-ptt" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="10" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 13h10" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+    <symbol id="i-leave" viewBox="0 0 24 24"><path d="M3 14c5-5 13-5 18 0l-2.5 2.5-3.5-1.5v-3a10 10 0 0 0-6 0v3l-3.5 1.5z" fill="currentColor"/></symbol>
+    <symbol id="i-speaker" viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-hash" viewBox="0 0 24 24"><path d="M9 4L7 20M17 4l-2 16M4 9h17M3 15h17" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.8-4.5 4.3 1.1 6.1L12 17l-5.4 2.8 1.1-6.1-4.5-4.3 6.1-.8z" fill="currentColor"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="currentColor"/><path d="M4 21a8 8 0 0 1 16 0z" fill="currentColor"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="currentColor"/></symbol>
+    <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="currentColor"/><path d="M4 4l16 16" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-dm" viewBox="0 0 24 24"><path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H9l-4.5 3.5V17H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z" fill="currentColor"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+  </svg>
+
+  <script src="scripts/i18n.js"></script>
+  <script src="scripts/hub-client.js"></script>
+  <script src="scripts/demo.js"></script>
+  <script src="scripts/media-background.js"></script>
+  <script src="scripts/motion.js"></script>
+  <script src="scripts/channels.js"></script>
+  <script src="scripts/chat.js"></script>
+  <script src="scripts/app.js"></script>
+</body>
+</html>

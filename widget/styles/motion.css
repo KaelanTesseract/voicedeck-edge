@@ -1,0 +1,198 @@
+/* Micro-interactions after interior.dev (MIT, Copyright (c) 2026 ozzy) – see scripts/motion.js.
+   Shared feel: out-expo easing cubic-bezier(0.23, 1, 0.32, 1); springs approximated with short tweens. */
+
+:root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --spring: 170ms var(--ease-out);
+}
+
+/* ---------- Press Depth ---------- */
+
+.control, .tab, .chip, .channel, .member, .pill-button, .guild, .popup-close, .chat-privacy, .new-items-pill {
+  --press-x: 0;
+  --press-y: 0;
+  --press-depth: calc(var(--u) * 0.7);
+  --press-tilt: 6deg;
+  transition: transform var(--spring), box-shadow var(--spring), background-color 150ms, color 150ms, opacity 150ms;
+}
+
+/* keycap look: a darker base edge below raised buttons, a light top edge */
+.control, .pill-button, .chip, .popup-close, .chat-privacy {
+  box-shadow:
+    0 var(--press-depth) 0 color-mix(in srgb, var(--text-color) 9%, transparent),
+    inset 0 1.5px 0 color-mix(in srgb, #fff 10%, transparent);
+}
+
+.is-pressed {
+  transform: perspective(340px) translateY(var(--press-depth))
+    rotateX(calc(var(--press-y) * -1 * var(--press-tilt)))
+    rotateY(calc(var(--press-x) * var(--press-tilt)));
+  box-shadow: 0 0 0 transparent, inset 0 0 0 transparent;
+}
+
+/* big surfaces lean less, list rows only sink */
+.member { --press-tilt: 3deg; }
+.channel, .tab, .guild { --press-tilt: 0deg; --press-depth: calc(var(--u) * 0.4); }
+
+/* ---------- Hold to Confirm (leave) ---------- */
+
+.control-leave { position: relative; overflow: hidden; display: grid; place-items: center; isolation: isolate; }
+.leave-face { grid-area: 1 / 1; display: flex; align-items: center; gap: calc(var(--u) * 1.6); transition: opacity 260ms var(--ease-out); }
+.leave-done { opacity: 0; color: #fff; position: relative; z-index: 2; }
+.hold-fill {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--danger);
+  color: #fff;
+  clip-path: inset(0 100% 0 0);
+  z-index: 1;
+}
+.control-leave.is-confirmed .leave-face:not(.leave-done) { opacity: 0; }
+.control-leave.is-confirmed .leave-done { opacity: 1; }
+.control-leave:not(.is-hold) .hold-fill { display: none; }
+
+/* ---------- Long Press (pin a channel) ---------- */
+
+.channel, .chip { position: relative; overflow: hidden; }
+.press-ink {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--accent-color) 32%, transparent);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 140ms var(--ease-out);
+  pointer-events: none;
+}
+.is-fired { animation: press-pop 260ms var(--ease-out); }
+@keyframes press-pop { 40% { scale: 1.045; } 100% { scale: 1; } }
+
+/* ---------- Segmented Control (tabs) ---------- */
+
+.tabs { position: relative; }
+.tab { position: relative; z-index: 1; transition: transform var(--spring), color 220ms var(--ease-out); }
+.tab-thumb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  border-radius: var(--radius-small);
+  background: var(--accent-color);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: transform 320ms var(--ease-out), width 320ms var(--ease-out), height 320ms var(--ease-out);
+  pointer-events: none;
+}
+
+/* ---------- Slider Detents (volume) ---------- */
+
+.volume-track { position: relative; }
+.volume-ticks { position: absolute; left: calc(var(--u) * 3.5); right: calc(var(--u) * 3.5); bottom: calc(var(--u) * -0.6); height: calc(var(--u) * 1.6); pointer-events: none; }
+.volume-ticks i { position: absolute; top: 0; width: 2px; height: 100%; border-radius: 1px; background: var(--faint); transform: translateX(-50%); }
+.volume-slider::-webkit-slider-thumb { transition: scale var(--spring); }
+.volume-slider:active::-webkit-slider-thumb { scale: 1.08; }
+
+/* ---------- Chat: privacy button, images, emojis, new-items pill, lightbox ---------- */
+
+.chat-privacy {
+  margin-left: auto;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1);
+  padding: calc(var(--u) * 1.2) calc(var(--u) * 2.2);
+  border-radius: 999px;
+  background: var(--surface-strong);
+  font-size: var(--font-small);
+  font-weight: 600;
+}
+.chat-privacy .icon { width: calc(var(--u) * 3.6); height: calc(var(--u) * 3.6); }
+.chat-privacy.is-on { background: color-mix(in srgb, var(--warning) 26%, transparent); color: var(--warning); }
+
+.chat-body { position: relative; flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; }
+/* rows in the scrolling column must keep their natural height, otherwise the last ones get squeezed and clipped */
+.chat-messages > * { flex-shrink: 0; }
+
+.emoji { width: 1.375em; height: 1.375em; object-fit: contain; vertical-align: -0.3em; }
+.message-text.is-jumbo { font-size: calc(var(--font-body) * 2.2); line-height: 1.2; }
+.message-text.is-jumbo .emoji { width: 1.2em; height: 1.2em; }
+.message-edited { font-size: var(--font-small); color: var(--faint); }
+
+.message-images { display: flex; flex-wrap: wrap; gap: calc(var(--u) * 1); margin-top: calc(var(--u) * 1); }
+.message-image {
+  display: block;
+  padding: 0;
+  width: min(100%, calc(var(--u) * 60));
+  max-height: calc(var(--u) * 42);
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-small);
+  overflow: hidden;
+  background: var(--surface-strong);
+}
+.message-images.is-grid .message-image { width: calc(50% - var(--u) * 0.5); max-height: calc(var(--u) * 28); }
+
+/* Blur-up Image: develops from blurred, desaturated and slightly oversized into focus */
+img.blur-up {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  filter: blur(18px) saturate(0.6);
+  transform: scale(1.06);
+  transition: opacity 650ms var(--ease-out), filter 650ms var(--ease-out), transform 650ms var(--ease-out);
+}
+img.blur-up.is-ready { opacity: 1; filter: none; transform: none; }
+img.blur-up.is-instant { transition: none; }
+img.blur-up.is-broken { display: none; }
+
+.view-chat.is-private .message-image img,
+.view-chat.is-private .emoji { visibility: hidden; }
+
+.new-items-pill {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--u) * 1.6);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1);
+  padding: calc(var(--u) * 1.4) calc(var(--u) * 2.8) calc(var(--u) * 1.4) calc(var(--u) * 2);
+  border-radius: 999px;
+  background: var(--accent-color);
+  color: #fff;
+  font-size: var(--font-small);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 calc(var(--u) * 0.8) calc(var(--u) * 2.4) rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, calc(var(--u) * 1.4)) scale(0.94);
+  transition: opacity 160ms var(--ease-out), transform 300ms var(--ease-out);
+  z-index: 3;
+}
+.new-items-pill .icon { width: calc(var(--u) * 3.4); height: calc(var(--u) * 3.4); }
+.new-items-pill.is-visible { opacity: 1; pointer-events: auto; transform: translate(-50%, 0) scale(1); }
+.new-items-pill.is-visible.is-pressed { transform: translate(-50%, var(--press-depth)) scale(0.98); }
+
+.lightbox {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  background: rgba(0, 0, 0, 0.88);
+  opacity: 0;
+  transition: opacity 200ms var(--ease-out);
+}
+.lightbox.is-open { opacity: 1; }
+.lightbox img { max-width: 94%; max-height: 94%; border-radius: var(--radius-small); object-fit: contain; transform: scale(0.96); transition: transform 300ms var(--ease-out); }
+.lightbox.is-open img { transform: none; }
+
+/* ---------- Reduced motion: the information still arrives, the trip is skipped ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; }
+  .is-pressed { transform: translateY(var(--press-depth)); }
+  img.blur-up { filter: none; transform: none; }
+}

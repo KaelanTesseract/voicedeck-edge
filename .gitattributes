@@ -1,0 +1,4 @@
+# Normalize line endings in the repository; binary assets stay untouched.
+* text=auto
+*.ico binary
+*.png binary

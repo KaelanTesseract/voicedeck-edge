@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Test hub
+        run: dotnet test hub.Tests --nologo
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate widget
+        run: |
+          npm install -g icuewidget-cli
+          icuewidget validate widget

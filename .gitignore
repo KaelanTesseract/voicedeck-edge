@@ -1,0 +1,7 @@
+bin/
+obj/
+*.user
+.vs/
+spike/*.json
+dist/
+artifacts/

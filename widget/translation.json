@@ -1,0 +1,52 @@
+{
+  "en": {
+    "translation": {
+      "Voicedeck Edge": "Voicedeck Edge",
+      "Voice Layout": "Voice layout",
+      "Tiles": "Tiles",
+      "List": "List",
+      "Widget Personalization": "Widget Personalization",
+      "Text Color": "Text Color",
+      "Accent Color": "Accent Color",
+      "Background Color": "Background Color",
+      "Background Transparency": "Background Transparency",
+      "Requires the Voicedeck Edge Hub on this PC.": "Requires the free Voicedeck Edge Hub on this PC.",
+      "Show Chat": "Show chat",
+      "Private Mode": "Private mode (blur chat until tapped)",
+      "Background Image": "Background Image",
+      "Background Brightness": "Background Brightness (own image only)",
+      "Glass Blur": "Glass Blur (own image only)",
+      "Theme": "Theme",
+      "Dark": "Dark",
+      "Light": "Light",
+      "Text Size": "Text Size",
+      "Automatic": "Automatic",
+      "Hold to Leave": "Leave: press and hold"
+    }
+  },
+  "de": {
+    "translation": {
+      "Voicedeck Edge": "Voicedeck Edge",
+      "Voice Layout": "Darstellung Sprachkanal",
+      "Tiles": "Kacheln",
+      "List": "Liste",
+      "Widget Personalization": "Widget-Personalisierung",
+      "Text Color": "Textfarbe",
+      "Accent Color": "Akzentfarbe",
+      "Background Color": "Hintergrundfarbe",
+      "Background Transparency": "Hintergrundtransparenz",
+      "Requires the Voicedeck Edge Hub on this PC.": "Benötigt den kostenlosen Voicedeck Edge Hub auf diesem PC.",
+      "Show Chat": "Chat anzeigen",
+      "Private Mode": "Privatmodus (Chat unscharf bis zum Antippen)",
+      "Background Image": "Hintergrundbild",
+      "Background Brightness": "Hintergrundhelligkeit (nur eigenes Bild)",
+      "Glass Blur": "Glas-Unschärfe (nur eigenes Bild)",
+      "Theme": "Design",
+      "Dark": "Dunkel",
+      "Light": "Hell",
+      "Text Size": "Textgröße",
+      "Automatic": "Automatisch",
+      "Hold to Leave": "Verlassen: gedrückt halten"
+    }
+  }
+}

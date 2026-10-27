@@ -1,0 +1,67 @@
+name: Release
+
+# Push a tag like v0.9.0 → tests, hub (self-contained .exe), widget package and installer are built
+# and attached to a DRAFT release. Publishing the draft stays a manual step on GitHub.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read version from tag
+        id: version
+        shell: pwsh
+        run: |
+          $v = "${{ github.ref_name }}".TrimStart("v")
+          "value=$v" >> $env:GITHUB_OUTPUT
+
+      - name: Check that hub and widget carry the tag's version
+        shell: pwsh
+        run: |
+          $v = "${{ steps.version.outputs.value }}"
+          $hub = ([xml](Get-Content hub/VoicedeckEdge.Hub.csproj)).Project.PropertyGroup.Version | Where-Object { $_ } | Select-Object -First 1
+          $widget = (Get-Content widget/manifest.json -Raw | ConvertFrom-Json).version
+          if ($hub -ne $v -or $widget -ne $v) { throw "Version mismatch: tag $v, hub $hub, widget $widget" }
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Test hub
+        run: dotnet test hub.Tests --nologo
+
+      - name: Publish hub
+        run: dotnet publish hub -c Release -o artifacts/hub
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Package widget
+        run: |
+          npm install -g icuewidget-cli
+          icuewidget package widget -o artifacts/VoicedeckEdge.icuewidget
+
+      - name: Build installer
+        shell: pwsh
+        run: |
+          choco install innosetup --no-progress -y
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /Q "/DAppVersion=${{ steps.version.outputs.value }}" installer/VoicedeckEdge.iss
+
+      - name: Create draft release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $v = "${{ steps.version.outputs.value }}"
+          Get-FileHash artifacts/installer/*.exe, artifacts/VoicedeckEdge.icuewidget -Algorithm SHA256 |
+            ForEach-Object { "$($_.Hash.ToLower())  $(Split-Path $_.Path -Leaf)" } | Set-Content artifacts/SHA256SUMS.txt
+          gh release create "${{ github.ref_name }}" --draft --title "Voicedeck Edge $v" --notes-file docs/release-notes.md `
+            "artifacts/installer/VoicedeckEdge-Setup-$v.exe" artifacts/VoicedeckEdge.icuewidget artifacts/SHA256SUMS.txt
