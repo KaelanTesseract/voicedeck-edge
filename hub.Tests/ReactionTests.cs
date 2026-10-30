@@ -45,3 +45,38 @@ public class ReactionTests
         Assert.Empty(StateStore.MapReactions(new JsonObject()));
     }
 }
+
+public class ReactionRefreshTests
+{
+    private const string Channel = "600000000000000001";
+
+    private static JsonObject Message(string id, params JsonObject[] reactions) => new()
+    {
+        ["id"] = id,
+        ["content"] = "hey",
+        ["timestamp"] = "2026-10-30T10:00:00Z",
+        ["author"] = new JsonObject { ["id"] = "100000000000000002", ["username"] = "sam" },
+        ["reactions"] = new JsonArray(reactions.Select(r => (JsonNode?)r).ToArray()),
+    };
+
+    private static JsonObject Heart(int count) => new() { ["emoji"] = new JsonObject { ["id"] = null, ["name"] = "❤️" }, ["count"] = count, ["me"] = false };
+
+    [Fact]
+    public void Re_reading_the_channel_updates_reactions_and_emits_only_on_change()
+    {
+        var store = new StateStore();
+        store.SetChat(new JsonObject { ["id"] = Channel, ["name"] = "general", ["type"] = 0, ["messages"] = new JsonArray(Message("900000000000000001")) });
+        var emitted = 0;
+        store.SectionChanged += (section, _) => { if (section == "chat") emitted++; };
+
+        var fresh = new JsonObject { ["messages"] = new JsonArray(Message("900000000000000001", Heart(2)), Message("900000000000000099", Heart(5))) };
+        store.RefreshReactions(Channel, fresh);
+        store.RefreshReactions(Channel, fresh.DeepClone().AsObject()); // same again: nothing new
+        store.RefreshReactions("600000000000000002", fresh);           // another channel: ignored
+
+        var messages = store.Snapshot()["chat"]!["messages"]!.AsArray();
+        Assert.Single(messages);                                    // unknown messages are not added
+        Assert.Equal(2, messages[0]!["reactions"]![0]!["count"]!.GetValue<int>());
+        Assert.Equal(1, emitted);
+    }
+}

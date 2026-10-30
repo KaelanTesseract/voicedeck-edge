@@ -50,8 +50,12 @@ internal sealed class HubController
         _state.SetStatus(StatusName(session.Status));
     }
 
+    /// <summary>How often the open chat is re-read for reactions (RPC has no reaction events).</summary>
+    private static readonly TimeSpan ReactionRefresh = TimeSpan.FromSeconds(10);
+
     public async Task RunAsync(CancellationToken ct)
     {
+        _ = Task.Run(() => ReactionLoopAsync(ct), ct);
         await foreach (var work in _queue.Reader.ReadAllAsync(ct))
         {
             try
@@ -378,6 +382,21 @@ internal sealed class HubController
         var result = new JsonObject { ["guildId"] = guildId, ["voice"] = Sorted(voice), ["text"] = Sorted(text) };
         _channelCache[guildId] = (DateTime.UtcNow, result);
         return result.DeepClone();
+    }
+
+    private async Task ReactionLoopAsync(CancellationToken ct)
+    {
+        using var timer = new PeriodicTimer(ReactionRefresh);
+        while (await timer.WaitForNextTickAsync(ct))
+        {
+            // On the worker, so it never races with opening or closing a chat.
+            Enqueue(async () =>
+            {
+                if (_ipc is not { } ipc || _subscribedChat is not { } channelId) return;
+                if (await ipc.CommandAsync("GET_CHANNEL", new JsonObject { ["channel_id"] = channelId }) is JsonObject channel)
+                    _state.RefreshReactions(channelId, channel);
+            });
+        }
     }
 
     private async Task<JsonNode?> OpenChatAsync(DiscordIpc ipc, string channelId)

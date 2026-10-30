@@ -330,6 +330,29 @@ internal sealed partial class StateStore(MediaRegistry? media = null)
         else if (_chatChannelId != null) MarkChannelRead(_chatChannelId);
     }
 
+    /// <summary>
+    /// Discord's RPC has no reaction events, so the hub re-reads the open channel now and then (GET_CHANNEL data)
+    /// and takes over only the reactions of messages it already shows. Emits only when something changed.
+    /// </summary>
+    public void RefreshReactions(string channelId, JsonObject channel)
+    {
+        var changed = false;
+        lock (_gate)
+        {
+            if (channelId != _chatChannelId) return;
+            foreach (var raw in channel.Arr("messages").OfType<JsonObject>())
+            {
+                var i = raw.Str("id") is { } id ? _messages.FindIndex(m => m.Id == id) : -1;
+                if (i < 0) continue;
+                var reactions = MapReactions(raw);
+                if (reactions.SequenceEqual(_messages[i].Reactions)) continue;
+                _messages[i] = _messages[i] with { Reactions = reactions };
+                changed = true;
+            }
+        }
+        if (changed) Emit("chat", ChatSection());
+    }
+
     /// <summary>MESSAGE_CREATE / _UPDATE / _DELETE (data = { channel_id, message }).</summary>
     public void ApplyMessage(string evt, JsonObject data)
     {
