@@ -99,3 +99,63 @@ public class DirectMessageTests
     [Fact]
     public void Missing_scope_list_is_not_enough() => Assert.False(DiscordOAuth.HasRequiredScopes(new JsonObject()));
 }
+
+public class ServerUnreadTests
+{
+    private const string Guild = "300000000000000001";
+    private const string General = "600000000000000001";
+    private const string Clips = "600000000000000002";
+
+    private static JsonObject Notification(string channelId) => new()
+    {
+        ["channel_id"] = channelId,
+        ["title"] = "Sam (#general, Server)",
+        ["message"] = new JsonObject
+        {
+            ["id"] = "900000000000000001",
+            ["channel_id"] = channelId,
+            ["guild_id"] = Guild,
+            ["author"] = new JsonObject { ["id"] = "100000000000000002", ["username"] = "sam" },
+            ["content"] = "hey",
+        },
+    };
+
+    private static JsonNode Unread(StateStore store) => store.Snapshot()["unread"]!;
+
+    [Fact]
+    public void Server_notifications_count_per_channel_and_add_up_per_server()
+    {
+        var store = new StateStore();
+        store.ApplyNotification(Notification(General));
+        store.ApplyNotification(Notification(General));
+        store.ApplyNotification(Notification(Clips));
+
+        Assert.Equal(3, Unread(store)["guilds"]![Guild]!.GetValue<int>());
+        Assert.Equal(2, Unread(store)["channels"]![General]!.GetValue<int>());
+        Assert.Empty(store.Snapshot()["dms"]!["conversations"]!.AsArray()); // never shown as a DM
+    }
+
+    [Fact]
+    public void Opening_the_channel_clears_it_and_the_open_channel_does_not_count()
+    {
+        var store = new StateStore();
+        store.ApplyNotification(Notification(General));
+        store.ApplyNotification(Notification(Clips));
+        store.SetChat(new JsonObject { ["id"] = General, ["name"] = "general", ["type"] = 0, ["messages"] = new JsonArray() });
+        store.ApplyNotification(Notification(General));
+
+        Assert.Null(Unread(store)["channels"]![General]);
+        Assert.Equal(1, Unread(store)["guilds"]![Guild]!.GetValue<int>());
+    }
+
+    [Fact]
+    public void Counts_are_capped_and_forgotten_when_the_connection_ends()
+    {
+        var store = new StateStore();
+        for (var i = 0; i < 150; i++) store.ApplyNotification(Notification(General));
+        Assert.Equal(StateStore.MaxUnreadCount, Unread(store)["guilds"]![Guild]!.GetValue<int>());
+
+        store.Reset();
+        Assert.Empty(Unread(store)["guilds"]!.AsObject());
+    }
+}

@@ -64,6 +64,8 @@ Fertig! Ein lila **V** in der Taskleiste zeigt, dass das Hilfsprogramm (der *Hub
 ## Tipps
 
 - **Kanal anheften:** gedrückt halten, bis er sich füllt. Nochmal halten löst ihn.
+- **Server sortieren wie in Discord:** Server-Symbol gedrückt halten, bis es sich anhebt, dann nach oben oder unten ziehen. Discord gibt deine eigene Reihenfolge nicht an andere Programme weiter, deshalb stellst du sie einmal im Widget ein.
+- **Rote Zahlen an Servern:** neue Nachrichten, für die dich Discord benachrichtigt (Erwähnungen oder alle Nachrichten bei Servern mit *Alle Nachrichten*). Sie verschwinden, wenn du den Kanal im Widget öffnest – was du in Discord selbst gelesen hast, erfährt das Widget nicht.
 - **Verlassen:** *Verlassen* gedrückt halten, bis der rote Balken voll ist. (Lässt sich in den Einstellungen auf einfaches Tippen umstellen.)
 - **Direktnachrichten:** Sprechblasen-Symbol oben in der Server-Spalte. Unterhaltungen erscheinen, sobald dir jemand schreibt, während der Hub läuft.
 - **Hintergrundbild und eigene Farben:** in den Widget-Einstellungen zuerst **Benutzerdefinierter Stil** einschalten.

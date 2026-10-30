@@ -23,6 +23,7 @@ internal sealed class HubController
     private readonly Channel<Func<Task>> _queue = Channel.CreateUnbounded<Func<Task>>(new UnboundedChannelOptions { SingleReader = true });
     // Read-only lookups (guild/channel lists) run beside the worker, so these caches are concurrent.
     private readonly ConcurrentDictionary<string, string> _guildNames = new();
+    private readonly ConcurrentDictionary<string, string> _channelGuild = new(); // "" = direct message
     private readonly ConcurrentDictionary<string, (DateTime At, JsonNode Data)> _channelCache = new();
     private volatile Tuple<DateTime, JsonNode>? _guildCache;
     private volatile DiscordIpc? _ipc;
@@ -39,6 +40,7 @@ internal sealed class HubController
             _ipc = null;
             _subscribedVoice = _subscribedChat = null;
             _guildNames.Clear();
+            _channelGuild.Clear();
             _channelCache.Clear();
             _guildCache = null;
             _state.Reset();
@@ -155,12 +157,37 @@ internal sealed class HubController
                 await SwitchVoiceAsync(channel);
                 break;
             case "NOTIFICATION_CREATE":
+                await ResolveNotificationGuildAsync(data);
                 _state.ApplyNotification(data);
                 break;
             case "MESSAGE_CREATE" or "MESSAGE_UPDATE" or "MESSAGE_DELETE":
                 _state.ApplyMessage(evt, data);
                 break;
         }
+    }
+
+    /// <summary>
+    /// Server or DM? Notifications normally carry message.guild_id; when it is missing the channel is looked
+    /// up once (GET_CHANNEL has guild_id) so a server message is never shown as a direct message.
+    /// </summary>
+    private async Task ResolveNotificationGuildAsync(JsonObject data)
+    {
+        if (data["message"] is not JsonObject message || message.Str("guild_id") != null || _ipc == null) return;
+        if ((data.Str("channel_id") ?? message.Str("channel_id")) is not { } channelId || !Json.IsSnowflake(channelId)) return;
+        if (!_channelGuild.TryGetValue(channelId, out var guildId))
+        {
+            try
+            {
+                var channel = await _ipc.CommandAsync("GET_CHANNEL", new JsonObject { ["channel_id"] = channelId }) as JsonObject;
+                guildId = channel.Str("guild_id") ?? "";
+                _channelGuild[channelId] = guildId;
+            }
+            catch (DiscordRpcException)
+            {
+                return;
+            }
+        }
+        if (guildId.Length > 0) message["guild_id"] = guildId;
     }
 
     private async Task SwitchVoiceAsync(JsonObject? channel)

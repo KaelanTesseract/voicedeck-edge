@@ -74,6 +74,10 @@ var VoicedeckDemo = (function () {
           { channelId: '600000000000000001', name: 'Robin', avatar: null, lastTime: minutesAgo(4), unread: 2 },
           { channelId: '600000000000000002', name: 'Kim', avatar: null, lastTime: minutesAgo(90), unread: 0 }
         ]
+      },
+      unread: {
+        guilds: { '300000000000000001': 1, '300000000000000002': 4 },
+        channels: { '210000000000000002': 1, '210000000000000011': 3, '210000000000000012': 1 }
       }
     };
   }

@@ -1,3 +1,12 @@
+## Voicedeck Edge 0.9.2 (Beta)
+
+- **Arrange your servers:** press and hold a server icon, then drag it – set it up once like your Discord sidebar (Discord doesn't share your own order with other programs).
+- **Red unread numbers on servers and text channels** for messages Discord notifies you about, like in Discord. Opening the channel in the widget clears them. Memory only, nothing is stored.
+
+**Download:** `VoicedeckEdge-Setup-0.9.2.exe` – install over the previous version, your sign-in and pairing are kept. Re-import the widget in iCUE (button in the setup assistant).
+
+---
+
 ## Voicedeck Edge 0.9.1 (Beta)
 
 **New: swipe to change pages.** iCUE doesn't pass swipes over touch widgets through, so you couldn't leave a page that Voicedeck Edge sits on. Now the widget recognises a left/right swipe and the hub presses iCUE's page shortcut for you. One-time setup in iCUE (XENEON EDGE → device settings): *Previous display screen* = **Ctrl + Alt + Shift + Left arrow**, *Next display screen* = **Ctrl + Alt + Shift + Right arrow**. Details: [docs/SETUP.md](https://github.com/KaelanTesseract/voicedeck-edge/blob/main/docs/SETUP.md#english). Can be switched off in the widget settings.

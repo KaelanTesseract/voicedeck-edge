@@ -649,7 +649,13 @@ button {
 .guild-badge { position: absolute; right: calc(var(--u) * -0.6); bottom: calc(var(--u) * -0.6); box-shadow: 0 0 0 calc(var(--u) * 0.6) var(--bg-color); }
 .channel-dm { min-height: calc(var(--u) * 11); }
 .dm-avatar { --avatar: calc(var(--u) * 7); }
-.channel-dm.is-unread .channel-name { color: var(--text-color); font-weight: 700; }
+.channel-dm.is-unread .channel-name, .channel.is-unread .channel-name { color: var(--text-color); font-weight: 700; }
+.channel .dm-badge { flex: none; }
+
+/* arranging the server column (press and hold, then drag) */
+.guilds.is-sorting { overflow-y: hidden; }
+.guilds.is-sorting .guild:not(.is-dragging) { opacity: 0.7; }
+.guild.is-dragging { z-index: 2; transform: scale(1.12); filter: drop-shadow(0 calc(var(--u) * 1) calc(var(--u) * 2) rgba(0, 0, 0, 0.45)); transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1); }
 .dm-time { flex: none; font-size: var(--font-small); color: var(--faint); }
 .tab.has-badge::after {
   content: "";

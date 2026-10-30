@@ -53,6 +53,9 @@ internal sealed partial class StateStore(MediaRegistry? media = null)
     private readonly List<ChatMessage> _messages = [];
     private readonly List<DirectConversation> _dms = [];
     public const int MaxDirectConversations = 20;
+    // Unread server messages per channel (from notifications), kept only in memory like the DM list.
+    private readonly Dictionary<string, (string GuildId, int Count)> _unread = [];
+    public const int MaxUnreadCount = 99;
 
     public event Action<string, JsonNode?>? SectionChanged;
     public event Action<string, bool>? SpeakingChanged;
@@ -74,6 +77,7 @@ internal sealed partial class StateStore(MediaRegistry? media = null)
                 ["settings"] = SettingsSection(),
                 ["chat"] = ChatSection(),
                 ["dms"] = DmSection(),
+                ["unread"] = UnreadSection(),
             };
         }
     }
@@ -111,24 +115,31 @@ internal sealed partial class StateStore(MediaRegistry? media = null)
             _chatIsDirect = false;
             _messages.Clear();
             _dms.Clear(); // the DM list lives only as long as the connection (privacy choice)
+            _unread.Clear();
         }
         Emit("me", null);
         Emit("voice", VoiceSection());
         Emit("settings", SettingsSection());
         Emit("chat", ChatSection());
         Emit("dms", DmSection());
+        Emit("unread", UnreadSection());
     }
 
     // ---------- direct messages ----------
 
     /// <summary>
-    /// NOTIFICATION_CREATE: only direct messages (no guild) are of interest. Adds or refreshes the
-    /// conversation and counts it as unread unless it is the chat open in the widget.
+    /// NOTIFICATION_CREATE: a direct message adds or refreshes the conversation; a server message counts
+    /// towards that server's red badge. Either is unread unless it is the chat open in the widget.
     /// </summary>
     public void ApplyNotification(JsonObject data)
     {
         var message = data["message"] as JsonObject;
-        if (message == null || message.Str("guild_id") != null) return;
+        if (message == null) return;
+        if (message.Str("guild_id") is { } guildId)
+        {
+            CountUnread(guildId, data.Str("channel_id") ?? message.Str("channel_id"));
+            return;
+        }
         var channelId = data.Str("channel_id") ?? message.Str("channel_id");
         var author = message["author"] as JsonObject;
         var authorId = author.Str("id");
@@ -146,6 +157,25 @@ internal sealed partial class StateStore(MediaRegistry? media = null)
             if (_dms.Count > MaxDirectConversations) _dms.RemoveAt(_dms.Count - 1);
         }
         Emit("dms", DmSection());
+    }
+
+    private void CountUnread(string guildId, string? channelId)
+    {
+        if (!Json.IsSnowflake(guildId) || channelId == null || !Json.IsSnowflake(channelId)) return;
+        lock (_gate)
+        {
+            if (channelId == _chatChannelId) return;
+            var count = _unread.TryGetValue(channelId, out var entry) ? entry.Count : 0;
+            _unread[channelId] = (guildId, Math.Min(count + 1, MaxUnreadCount));
+        }
+        Emit("unread", UnreadSection());
+    }
+
+    private void MarkChannelRead(string channelId)
+    {
+        bool changed;
+        lock (_gate) changed = _unread.Remove(channelId);
+        if (changed) Emit("unread", UnreadSection());
     }
 
     private void MarkDirectRead(string channelId)
@@ -282,6 +312,7 @@ internal sealed partial class StateStore(MediaRegistry? media = null)
         }
         Emit("chat", ChatSection());
         if (_chatIsDirect && _chatChannelId != null) MarkDirectRead(_chatChannelId);
+        else if (_chatChannelId != null) MarkChannelRead(_chatChannelId);
     }
 
     /// <summary>MESSAGE_CREATE / _UPDATE / _DELETE (data = { channel_id, message }).</summary>
@@ -434,6 +465,22 @@ internal sealed partial class StateStore(MediaRegistry? media = null)
     private JsonNode SettingsSection()
     {
         lock (_gate) return new JsonObject { ["mute"] = _mute, ["deaf"] = _deaf, ["mode"] = _mode };
+    }
+
+    /// <summary>{ guilds: { id: count }, channels: { id: count } } – counts capped at <see cref="MaxUnreadCount"/>.</summary>
+    private JsonNode UnreadSection()
+    {
+        lock (_gate)
+        {
+            var guilds = new JsonObject();
+            var channels = new JsonObject();
+            foreach (var (channelId, (guildId, count)) in _unread)
+            {
+                channels[channelId] = count;
+                guilds[guildId] = Math.Min((guilds[guildId]?.GetValue<int>() ?? 0) + count, MaxUnreadCount);
+            }
+            return new JsonObject { ["guilds"] = guilds, ["channels"] = channels };
+        }
     }
 
     private JsonNode DmSection()

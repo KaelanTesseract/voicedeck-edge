@@ -330,7 +330,7 @@ function renderLayout() {
   }
   // Unread direct messages: a dot on the channels tab so they are noticed from the voice view too.
   var channelsTab = document.querySelector('.tab[data-tab="channels"]');
-  channelsTab.classList.toggle('has-badge', layout !== 'xl' && pane !== 'channels' && unreadDirect() > 0);
+  channelsTab.classList.toggle('has-badge', layout !== 'xl' && pane !== 'channels' && unreadDirect() + unreadServers() > 0);
   document.querySelector('.topbar').hidden = layout === 'xl' || (layout === 'l' && !chatOn);
   VoicedeckMotion.placeThumb(document.querySelector('.tabs'));
 }
