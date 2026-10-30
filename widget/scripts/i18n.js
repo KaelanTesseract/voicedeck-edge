@@ -12,6 +12,8 @@ var VoicedeckI18n = (function () {
       voiceActivity: 'Voice activity', pushToTalk: 'Push to talk',
       leave: 'Leave',
       you: 'You',
+      audio: 'Audio', windowsDefault: 'Windows default', audioTitle: 'Audio devices', audioInput: 'Input', audioOutput: 'Output',
+      inputVolume: 'Input volume', outputVolume: 'Output volume', noDevices: 'Discord reports no devices.',
       volume: 'Volume', localMute: 'Mute for me', localUnmute: 'Unmute for me', reset: 'Reset',
       connectingHub: 'Connecting to Voicedeck Edge Hub …',
       hubMissingTitle: 'Voicedeck Edge Hub is not running',
@@ -54,6 +56,8 @@ var VoicedeckI18n = (function () {
       voiceActivity: 'Sprach­aktivierung', pushToTalk: 'Push to Talk', // soft hyphen: breaks on narrow buttons
       leave: 'Verlassen',
       you: 'Du',
+      audio: 'Audio', windowsDefault: 'Windows-Standard', audioTitle: 'Audiogeräte', audioInput: 'Eingabe', audioOutput: 'Ausgabe',
+      inputVolume: 'Eingangslautstärke', outputVolume: 'Ausgangslautstärke', noDevices: 'Discord meldet keine Geräte.',
       volume: 'Lautstärke', localMute: 'Für mich stumm', localUnmute: 'Für mich laut', reset: 'Zurücksetzen',
       connectingHub: 'Verbinde mit Voicedeck Edge Hub …',
       hubMissingTitle: 'Voicedeck Edge Hub läuft nicht',

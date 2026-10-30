@@ -1,10 +1,11 @@
-## Voicedeck Edge 0.9.3 (Beta)
+## Voicedeck Edge 0.9.4 (Beta)
 
+- **Audio devices:** new *Audio* button in the control bar. Choose your microphone and your speakers/headphones for Discord and set the input and output volume – right on the Edge.
 - **Smoother server sorting:** the server now follows your finger, the others slide aside, and you can move it any distance in one go (the column scrolls along at the edges). In 0.9.2 a server only moved one position at a time on the XENEON EDGE.
 - **Updating is easier:** after installing a new version, the setup assistant opens by itself on the widget step, so you can re-import the widget with one click.
 - Fixed: the update-check option in the assistant was cut off.
 
-**Download:** `VoicedeckEdge-Setup-0.9.3.exe` – install over the previous version and re-import the widget in iCUE (button in the setup assistant).
+**Download:** `VoicedeckEdge-Setup-0.9.4.exe` – install over the previous version; the setup assistant then opens on the widget step so you can re-import the widget with one click.
 
 ---
 

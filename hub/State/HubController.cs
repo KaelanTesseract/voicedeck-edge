@@ -249,6 +249,18 @@ internal sealed class HubController
             case "voice.setMode":
                 return await SetVoiceSettingsAsync(ipc, new JsonObject { ["mode"] = new JsonObject { ["type"] = cmd.Mode } });
 
+            case "audio.setInput" or "audio.setOutput":
+                var input = cmd.Op == "audio.setInput";
+                if (!_state.HasAudioDevice(input, cmd.DeviceId!)) throw new OpException("invalid_args");
+                return await SetVoiceSettingsAsync(ipc, new JsonObject
+                {
+                    [input ? "input" : "output"] = new JsonObject { ["device_id"] = cmd.DeviceId },
+                });
+            case "audio.setInputVolume":
+                return await SetVoiceSettingsAsync(ipc, new JsonObject { ["input"] = new JsonObject { ["volume"] = cmd.Volume } });
+            case "audio.setOutputVolume":
+                return await SetVoiceSettingsAsync(ipc, new JsonObject { ["output"] = new JsonObject { ["volume"] = cmd.Volume } });
+
             case "voice.leave":
                 await ipc.CommandAsync("SELECT_VOICE_CHANNEL", new JsonObject { ["channel_id"] = null });
                 return null;

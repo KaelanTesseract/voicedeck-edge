@@ -67,7 +67,21 @@ var VoicedeckDemo = (function () {
           member('100000000000000006', 'Mika', {})
         ]
       },
-      settings: { mute: false, deaf: false, mode: 'VOICE_ACTIVITY' },
+      settings: {
+        mute: false, deaf: false, mode: 'VOICE_ACTIVITY',
+        input: { deviceId: 'default', volume: 80, devices: [
+          { id: 'default', name: 'Default' },
+          { id: 'mic-headset', name: 'Headset Microphone (USB Audio)' },
+          { id: 'mic-studio', name: 'Studio Microphone' },
+          { id: 'mic-webcam', name: 'Webcam Microphone' }
+        ] },
+        output: { deviceId: 'out-headset', volume: 100, devices: [
+          { id: 'default', name: 'Default' },
+          { id: 'out-headset', name: 'Headset Earphone (USB Audio)' },
+          { id: 'out-speakers', name: 'Speakers (Realtek Audio)' },
+          { id: 'out-monitor', name: 'Monitor (NVIDIA High Definition Audio)' }
+        ] }
+      },
       chat: chat('210000000000000001'),
       dms: {
         conversations: [

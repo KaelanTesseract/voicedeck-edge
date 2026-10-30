@@ -312,7 +312,7 @@ button {
 
 /* ---------- controls ---------- */
 
-.controls { grid-area: controls; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap); }
+.controls { grid-area: controls; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--gap); }
 
 .control {
   height: var(--control-height);
@@ -330,6 +330,13 @@ button {
 }
 .control span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .control.is-long span { font-size: calc(var(--u) * 2.8 * var(--ts-control)); white-space: normal; line-height: 1.1; text-align: left; hyphens: manual; }
+
+/* Five buttons share the row: icon above a smaller label, so long labels fit without being cut. */
+.control, .leave-face { flex-direction: column; gap: calc(var(--u) * 0.6); }
+.control { padding: 0 calc(var(--u) * 0.8); font-size: calc(var(--u) * 2.9 * var(--ts-control)); }
+.control .icon { width: calc(var(--icon) * 0.9); height: calc(var(--icon) * 0.9); }
+.control span { max-width: 100%; text-align: center; }
+.control.is-long span { font-size: calc(var(--u) * 2.6 * var(--ts-control)); text-align: center; }
 .control:active { background: var(--surface-strong); }
 .control:disabled { opacity: 0.35; pointer-events: none; }
 .control.is-on { background: color-mix(in srgb, var(--danger) 85%, transparent); color: #fff; }
@@ -415,6 +422,27 @@ button {
 .popup-label { font-size: var(--font-body); color: var(--muted); }
 .popup-label strong { color: var(--text-color); }
 .popup-actions { display: flex; gap: var(--gap); }
+
+/* audio devices: input/output tabs, volume and the device list */
+.popup-audio { max-height: 92%; gap: calc(var(--u) * 2.4); }
+.audio-tabs { display: flex; gap: calc(var(--u) * 1); padding: calc(var(--u) * 0.8); background: var(--surface); border-radius: var(--radius); }
+.audio-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--u) * 1.4);
+  padding: calc(var(--u) * 1.8);
+  border-radius: var(--radius-small);
+  font-size: var(--font-tab);
+  font-weight: 600;
+  color: var(--muted);
+}
+.audio-tab .icon { width: calc(var(--u) * 4.4); height: calc(var(--u) * 4.4); }
+.audio-tab.is-active { background: var(--accent-color); color: #fff; }
+.audio-devices { min-height: 0; flex: 1 1 auto; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; gap: calc(var(--u) * 0.8); }
+.audio-device { flex: none; }
+.audio-device .audio-check { margin-left: auto; color: var(--accent-color); flex: none; }
 
 .volume-slider {
   -webkit-appearance: none;

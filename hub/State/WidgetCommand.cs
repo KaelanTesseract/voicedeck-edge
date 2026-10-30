@@ -12,7 +12,8 @@ internal sealed record WidgetCommand(
     int? Volume = null,
     bool? Mute = null,
     string? Mode = null,
-    bool? Next = null)
+    bool? Next = null,
+    string? DeviceId = null)
 {
     public static readonly IReadOnlySet<string> KnownOps = new HashSet<string>
     {
@@ -20,6 +21,7 @@ internal sealed record WidgetCommand(
         "user.setVolume", "user.setMute", "user.reset",
         "guilds.list", "channels.list", "chat.open", "chat.close",
         "edge.page",
+        "audio.setInput", "audio.setOutput", "audio.setInputVolume", "audio.setOutputVolume",
     };
 
     /// <summary>Validates a widget message strictly; throws <see cref="OpException"/> on anything unexpected.</summary>
@@ -37,6 +39,9 @@ internal sealed record WidgetCommand(
             "user.setVolume" => new WidgetCommand(op, UserId: Snowflake(msg, "userId"), Volume: ParseVolume(msg)),
             "user.setMute" => new WidgetCommand(op, UserId: Snowflake(msg, "userId"), Mute: Flag(msg, "mute")),
             "user.reset" => new WidgetCommand(op, UserId: Snowflake(msg, "userId")),
+            "audio.setInput" or "audio.setOutput" => new WidgetCommand(op, DeviceId: DeviceIdOf(msg)),
+            "audio.setInputVolume" => new WidgetCommand(op, Volume: Math.Min(ParseVolume(msg), 100)),
+            "audio.setOutputVolume" => new WidgetCommand(op, Volume: ParseVolume(msg)),
             "edge.page" => new WidgetCommand(op, Next: msg.Str("dir") switch
             {
                 "next" => true,
@@ -49,6 +54,10 @@ internal sealed record WidgetCommand(
 
     private static string Snowflake(JsonObject msg, string key) =>
         msg.Str(key) is { } v && Json.IsSnowflake(v) ? v : throw new OpException("invalid_args");
+
+    /// <summary>Discord device ids are opaque strings; only their shape is checked here, membership in the controller.</summary>
+    private static string DeviceIdOf(JsonObject msg) =>
+        msg.Str("deviceId") is { Length: > 0 and <= 512 } id && !id.Any(char.IsControl) ? id : throw new OpException("invalid_args");
 
     private static int ParseVolume(JsonObject msg)
     {

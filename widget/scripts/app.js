@@ -247,6 +247,7 @@ function render() {
   renderVoice();
   renderControls();
   syncPopup();
+  syncAudio();
   renderChannels();
   renderChat();
   ensureChannelsLoaded();
@@ -458,6 +459,7 @@ function renderControls() {
   setControl('btn-mute', { icon: s.mute ? 'i-mic-off' : 'i-mic', label: s.mute ? t('unmute') : t('mute'), on: s.mute });
   setControl('btn-deaf', { icon: s.deaf ? 'i-headphones-off' : 'i-headphones', label: s.deaf ? t('undeafen') : t('deafen'), on: s.deaf });
   setControl('btn-mode', { icon: ptt ? 'i-ptt' : 'i-wave', label: ptt ? t('pushToTalk') : t('voiceActivity'), accent: ptt });
+  setControl('btn-audio', { icon: 'i-sliders', label: t('audio'), disabled: !s.input && !s.output });
 
   // Leave: label exists twice (base + the copy inside the hold fill), so the button never changes width.
   var leave = $('btn-leave');
@@ -542,6 +544,8 @@ function bindControls() {
     if (app.client && app.connection === 'pair_denied') app.client.requestPairing();
   });
 
+  bindAudio();
+
   // member popup
   $('popup-close').addEventListener('click', closePopup);
   $('member-popup').addEventListener('click', function (e) { if (e.target === e.currentTarget) closePopup(); });
@@ -623,6 +627,122 @@ function syncPopup(initial) {
   var muteBtn = $('popup-mute');
   muteBtn.textContent = m.localMute ? t('localUnmute') : t('localMute');
   muteBtn.classList.toggle('is-on', m.localMute);
+}
+
+// ---------- audio devices (Discord's input/output settings) ----------
+
+var AudioUi = { side: null, dragging: false };
+var AUDIO_MAX = { input: 100, output: 200 };
+
+function audioSettings(side) {
+  var s = app.data && app.data.settings;
+  return (s && s[side]) || null;
+}
+
+function openAudio() {
+  AudioUi.side = AudioUi.side || 'output';
+  AudioUi.dragging = false;
+  $('audio-popup').hidden = false;
+  syncAudio(true);
+}
+
+function closeAudio() {
+  AudioUi.side = null;
+  $('audio-popup').hidden = true;
+}
+
+function showAudioVolume(volume) {
+  var max = AUDIO_MAX[AudioUi.side];
+  $('audio-volume-value').textContent = volume + '%';
+  $('audio-volume').style.setProperty('--fill', (volume / max * 100) + '%');
+}
+
+/** Keeps the open audio popup in line with Discord (devices can come and go, e.g. a headset plugged in). */
+function syncAudio(initial) {
+  if (!AudioUi.side || $('audio-popup').hidden) return;
+  var side = AudioUi.side;
+  var data = audioSettings(side) || { deviceId: null, volume: 100, devices: [] };
+  $('audio-title').textContent = t('audioTitle');
+  ['input', 'output'].forEach(function (s) {
+    var tab = $('audio-tab-' + s);
+    tab.querySelector('span').textContent = t(s === 'input' ? 'audioInput' : 'audioOutput');
+    tab.classList.toggle('is-active', s === side);
+  });
+  $('audio-volume-label').textContent = t(side === 'input' ? 'inputVolume' : 'outputVolume');
+  var slider = $('audio-volume');
+  slider.max = String(AUDIO_MAX[side]);
+  if (initial || !AudioUi.dragging) {
+    slider.value = String(data.volume);
+    showAudioVolume(data.volume);
+  }
+
+  var box = $('audio-devices');
+  var key = JSON.stringify([side, data.deviceId, data.devices]);
+  if (box.dataset.key === key) return;
+  box.dataset.key = key;
+  box.textContent = '';
+  (data.devices || []).forEach(function (d) {
+    var row = document.createElement('button');
+    row.className = 'channel audio-device' + (d.id === data.deviceId ? ' is-current' : '');
+    row.appendChild(icon(side === 'input' ? 'i-mic' : 'i-speaker'));
+    var name = document.createElement('span');
+    name.className = 'channel-name';
+    name.textContent = d.id === 'default' ? t('windowsDefault') : d.name;
+    row.appendChild(name);
+    if (d.id === data.deviceId) row.appendChild(icon('i-check', 'audio-check'));
+    row.addEventListener('click', function () { selectAudioDevice(side, d.id); });
+    box.appendChild(row);
+  });
+  if (!box.children.length) {
+    var hint = document.createElement('div');
+    hint.className = 'channel-hint';
+    hint.textContent = t('noDevices');
+    box.appendChild(hint);
+  }
+}
+
+function selectAudioDevice(side, deviceId) {
+  var data = audioSettings(side);
+  if (!data || data.deviceId === deviceId) return;
+  command(side === 'input' ? 'audio.setInput' : 'audio.setOutput', { deviceId: deviceId },
+    function () { data.deviceId = deviceId; }).catch(function () {});
+}
+
+function bindAudio() {
+  $('btn-audio').addEventListener('click', openAudio);
+  $('audio-close').addEventListener('click', closeAudio);
+  $('audio-popup').addEventListener('click', function (e) { if (e.target === e.currentTarget) closeAudio(); });
+  ['input', 'output'].forEach(function (side) {
+    $('audio-tab-' + side).addEventListener('click', function () {
+      AudioUi.side = side;
+      syncAudio(true);
+    });
+  });
+
+  var slider = $('audio-volume');
+  var lastSent = 0, sendTimer = null;
+  function sendVolume() {
+    var side = AudioUi.side, volume = Number(slider.value), data = audioSettings(side);
+    if (!side) return;
+    lastSent = Date.now();
+    command(side === 'input' ? 'audio.setInputVolume' : 'audio.setOutputVolume', { volume: volume },
+      function () { if (data) data.volume = volume; }).catch(function () {});
+  }
+  slider.addEventListener('pointerdown', function () { AudioUi.dragging = true; });
+  slider.addEventListener('input', function () {
+    // like Discord: the handle sticks to 100 % (and 50 %) when it comes close
+    var snapped = VoicedeckMotion.snapToDetent(Number(slider.value), AudioUi.side === 'output' ? [50, 100, 150, 200] : [50, 100], 5);
+    if (snapped !== Number(slider.value)) slider.value = String(snapped);
+    showAudioVolume(snapped);
+    clearTimeout(sendTimer);
+    if (Date.now() - lastSent > 150) sendVolume();
+    else sendTimer = setTimeout(sendVolume, 150);
+  });
+  slider.addEventListener('change', function () {
+    AudioUi.dragging = false;
+    clearTimeout(sendTimer);
+    sendVolume();
+  });
 }
 
 // ---------- boot ----------

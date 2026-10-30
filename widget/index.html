@@ -104,6 +104,7 @@
         <button class="control" id="btn-mute"><svg class="icon" aria-hidden="true"><use href="#i-mic" /></svg><span></span></button>
         <button class="control" id="btn-deaf"><svg class="icon" aria-hidden="true"><use href="#i-headphones" /></svg><span></span></button>
         <button class="control" id="btn-mode"><svg class="icon" aria-hidden="true"><use href="#i-wave" /></svg><span></span></button>
+        <button class="control" id="btn-audio"><svg class="icon" aria-hidden="true"><use href="#i-sliders" /></svg><span></span></button>
         <button class="control control-leave" id="btn-leave">
           <span class="leave-face"><svg class="icon" aria-hidden="true"><use href="#i-leave" /></svg><span class="leave-label"></span></span>
           <span class="leave-face leave-done" aria-hidden="true"><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg></span>
@@ -125,6 +126,24 @@
 
     <div class="page-hint" id="page-hint" aria-hidden="true"><svg class="icon"><use href="#i-chevron" /></svg></div>
     <div class="lightbox" id="lightbox" hidden><img alt="" id="lightbox-img" /></div>
+
+    <div class="popup-backdrop" id="audio-popup" hidden>
+      <div class="popup popup-audio" role="dialog">
+        <div class="popup-head">
+          <span class="popup-name" id="audio-title"></span>
+          <button class="popup-close" id="audio-close" aria-label="close"><svg class="icon" aria-hidden="true"><use href="#i-close" /></svg></button>
+        </div>
+        <div class="audio-tabs" role="tablist">
+          <button class="audio-tab" id="audio-tab-input" data-side="input"><svg class="icon" aria-hidden="true"><use href="#i-mic" /></svg><span></span></button>
+          <button class="audio-tab" id="audio-tab-output" data-side="output"><svg class="icon" aria-hidden="true"><use href="#i-headphones" /></svg><span></span></button>
+        </div>
+        <label class="popup-label"><span id="audio-volume-label"></span> <strong id="audio-volume-value"></strong></label>
+        <div class="volume-track">
+          <input type="range" class="volume-slider" id="audio-volume" min="0" max="200" step="1" />
+        </div>
+        <div class="audio-devices" id="audio-devices"></div>
+      </div>
+    </div>
 
     <div class="popup-backdrop" id="member-popup" hidden>
       <div class="popup" role="dialog">
@@ -164,6 +183,7 @@
     <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-dm" viewBox="0 0 24 24"><path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H9l-4.5 3.5V17H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z" fill="currentColor"/></symbol>
     <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M5 4v16M12 4v16M19 4v16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="2.5" y="13" width="5" height="3.4" rx="1.2" fill="currentColor"/><rect x="9.5" y="6.5" width="5" height="3.4" rx="1.2" fill="currentColor"/><rect x="16.5" y="11" width="5" height="3.4" rx="1.2" fill="currentColor"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
   </svg>
 

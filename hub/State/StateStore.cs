@@ -19,6 +19,12 @@ internal sealed record VoiceChannel(string Id, string Name, string? GuildId, str
 internal sealed record ChatImage(string Path, int Width, int Height);
 
 /// <summary>A DM conversation the hub learned about from a notification. Memory only.</summary>
+/// <summary>A microphone or speaker as Discord lists it (id is Discord's device id, "default" = Windows default).</summary>
+internal sealed record AudioDevice(string Id, string Name);
+
+/// <summary>One side of Discord's audio settings: chosen device, volume and the devices to choose from.</summary>
+internal sealed record AudioSide(string? DeviceId, int Volume, IReadOnlyList<AudioDevice> Devices);
+
 internal sealed record DirectConversation(string ChannelId, string Name, string? Avatar, string LastTime, int Unread);
 
 /// <summary>Attachments counts only non-image files; images are listed in <see cref="Images"/>.</summary>
@@ -48,6 +54,9 @@ internal sealed partial class StateStore(MediaRegistry? media = null)
     private readonly List<Member> _members = [];
     private bool _mute, _deaf;
     private string _mode = "VOICE_ACTIVITY";
+    private AudioSide _input = new(null, 100, []);
+    private AudioSide _output = new(null, 100, []);
+    public const int MaxAudioDevices = 32;
     private string? _chatChannelId, _chatChannelName;
     private bool _chatIsDirect;
     private readonly List<ChatMessage> _messages = [];
@@ -286,6 +295,8 @@ internal sealed partial class StateStore(MediaRegistry? media = null)
             _mute = data.Bool("mute", _mute);
             _deaf = data.Bool("deaf", _deaf);
             _mode = data["mode"].Str("type") ?? _mode;
+            _input = ReadAudioSide(data["input"] as JsonObject, _input, maxVolume: 100);
+            _output = ReadAudioSide(data["output"] as JsonObject, _output, maxVolume: 200);
         }
         Emit("settings", SettingsSection());
     }
@@ -464,7 +475,41 @@ internal sealed partial class StateStore(MediaRegistry? media = null)
 
     private JsonNode SettingsSection()
     {
-        lock (_gate) return new JsonObject { ["mute"] = _mute, ["deaf"] = _deaf, ["mode"] = _mode };
+        lock (_gate)
+        {
+            return new JsonObject
+            {
+                ["mute"] = _mute, ["deaf"] = _deaf, ["mode"] = _mode,
+                ["input"] = ToNode(_input), ["output"] = ToNode(_output),
+            };
+        }
+    }
+
+    /// <summary>Is <paramref name="deviceId"/> one of the devices Discord currently offers on that side?</summary>
+    public bool HasAudioDevice(bool input, string deviceId)
+    {
+        lock (_gate) return (input ? _input : _output).Devices.Any(d => d.Id == deviceId);
+    }
+
+    /// <summary>
+    /// GET_VOICE_SETTINGS / VOICE_SETTINGS_UPDATE: { device_id, volume, available_devices: [{ id, name }] }.
+    /// Missing parts keep their previous value (updates may only carry what changed).
+    /// </summary>
+    internal static AudioSide ReadAudioSide(JsonObject? side, AudioSide previous, int maxVolume)
+    {
+        if (side == null) return previous;
+        var devices = side["available_devices"] is JsonArray list
+            ? list.OfType<JsonObject>()
+                .Select(d => d.Str("id") is { Length: > 0 } id ? new AudioDevice(id, d.Str("name") is { Length: > 0 } n ? n : id) : null)
+                .OfType<AudioDevice>()
+                .Take(MaxAudioDevices)
+                .ToList()
+            : previous.Devices;
+        var volume = side["volume"] is JsonValue v
+                     && double.TryParse(v.ToJsonString(), NumberStyles.Float, CultureInfo.InvariantCulture, out var d) && !double.IsNaN(d)
+            ? (int)Math.Clamp(Math.Round(d), 0, maxVolume)
+            : previous.Volume;
+        return new AudioSide(side.Str("device_id") ?? previous.DeviceId, volume, devices);
     }
 
     /// <summary>{ guilds: { id: count }, channels: { id: count } } – counts capped at <see cref="MaxUnreadCount"/>.</summary>

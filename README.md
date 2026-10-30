@@ -26,6 +26,7 @@ Free and open source. No account with us, no servers, no tracking.
 **Also included**
 
 - 🎙️ **Mute, deafen, voice activity / push to talk** – big buttons that sink under your finger.
+- 🎚️ **Audio devices** – pick your microphone and headphones/speakers for Discord and set input and output volume.
 - 📞 **Leave the channel** by pressing and holding – no accidental hang-ups.
 - ⭐ **Favourites** – press and hold a channel to pin it at the top.
 - 🖼️ **Chat with pictures and server emojis**, updating live.

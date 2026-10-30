@@ -51,6 +51,7 @@ Discord erlaubt die Steuerung nur über eine *eigene* App. Das klingt technisch,
 
 - **Größen:** M zeigt Tabs (Sprache · Kanäle · Chat), L zwei Spalten, XL alles nebeneinander.
 - **Kanal anheften:** Kanal **lange drücken**, bis er sich ganz gefüllt hat → er erscheint oben als Favorit. Nochmal lange drücken löst ihn.
+- **Audiogeräte:** Knopf **Audio** in der Steuerleiste. Unter *Eingabe* wählst du das Mikrofon, unter *Ausgabe* Kopfhörer oder Lautsprecher, jeweils mit Lautstärkeregler – wie in Discords Spracheinstellungen.
 - **Server sortieren:** Server-Symbol **gedrückt halten**, bis es sich anhebt, dann an die gewünschte Stelle ziehen. Die Reihenfolge wird nur im Widget gespeichert (Discord gibt deine eigene Sortierung nicht an andere Programme weiter). Neue Server erscheinen unten.
 - **Rote Zahlen:** zeigen neue Nachrichten, für die dich Discord benachrichtigen würde – an Server und Kanal. Öffnest du den Kanal im Widget, verschwindet die Zahl. Nur solange der Hub läuft, nichts wird gespeichert.
 - **Kanal verlassen:** „Verlassen“ **gedrückt halten**, bis die rote Füllung durch ist (lässt sich in den Widget-Einstellungen auf einfaches Tippen umstellen).
@@ -134,6 +135,7 @@ Discord only allows control through *your own* app. It sounds technical but is j
 
 - **Sizes:** M uses tabs (Voice · Channels · Chat), L two columns, XL everything side by side.
 - **Pin a channel:** **press and hold** it until it is filled → it appears at the top as a favourite. Hold again to unpin.
+- **Audio devices:** **Audio** button in the control bar. *Input* picks the microphone, *Output* the headphones or speakers, each with a volume slider – like Discord's voice settings.
 - **Arrange servers:** **press and hold** a server icon until it lifts, then drag it where you want it. The order is saved in the widget only (Discord doesn't share your own sorting with other programs). New servers appear at the bottom.
 - **Red numbers:** new messages Discord would notify you about – on the server and the channel. Opening the channel in the widget clears the number. Only while the hub runs, nothing is stored.
 - **Leave a channel:** **press and hold** "Leave" until the red fill completes (can be switched to a single tap in the widget settings).
