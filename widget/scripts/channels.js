@@ -153,11 +153,12 @@ function renderChannels() {
     Channels.loadingChannels === Channels.guildId, favorites(), currentVoiceId(), currentChatId(),
     chatEnabled(), app.hub && app.hub.imageKey, directConversations(), serverUnread(), loadStore().guildOrder || null
   ]);
-  if (key === Channels.renderedKey) return;
+  if (key === Channels.renderedKey) { updateUnreadHints(); return; } // e.g. the tab just became visible
   Channels.renderedKey = key;
   renderGuilds();
   renderFavorites();
   renderChannelList();
+  updateUnreadHints();
 }
 
 function renderGuilds() {
@@ -174,7 +175,10 @@ function renderGuilds() {
     homeIcon.appendChild(icon('i-dm'));
     home.appendChild(homeIcon);
     var unread = unreadDirect();
-    if (unread > 0) home.appendChild(badge(unread, 'guild-badge'));
+    if (unread > 0) {
+      home.appendChild(badge(unread, 'guild-badge'));
+      home.dataset.unread = String(unread);
+    }
     home.addEventListener('click', function () { selectGuild(DM_HOME); });
     box.appendChild(home);
     var divider = document.createElement('span');
@@ -191,7 +195,10 @@ function renderGuilds() {
     icon.className = 'avatar guild-icon';
     fillAvatar(icon, { id: g.id, name: g.name, avatar: g.icon });
     btn.appendChild(icon);
-    if (unreadByGuild[g.id] > 0) btn.appendChild(badge(unreadByGuild[g.id], 'guild-badge'));
+    if (unreadByGuild[g.id] > 0) {
+      btn.appendChild(badge(unreadByGuild[g.id], 'guild-badge'));
+      btn.dataset.unread = String(unreadByGuild[g.id]);
+    }
     btn.addEventListener('click', function (e) {
       if (btn.dataset.dropped) { delete btn.dataset.dropped; e.preventDefault(); return; }
       selectGuild(g.id, g.id === Channels.guildId);
@@ -318,6 +325,75 @@ document.addEventListener('touchmove', function (e) {
   if (Channels.dragging && e.cancelable) e.preventDefault();
 }, { passive: false });
 
+/**
+ * Unread hints: when a server or channel with new messages is scrolled out of view, a small red pill at the
+ * top or bottom edge of that list says so. Tapping it scrolls to the nearest one, like Discord's "new unreads".
+ */
+var UNREAD_EDGE_PX = 6;
+
+function updateUnreadHints() {
+  unreadHintsFor($('guilds'), 'guilds', false);
+  unreadHintsFor($('channel-list'), 'channels', true);
+}
+
+function unreadHintsFor(box, key, withLabel) {
+  var parent = box.parentElement;
+  var hints = ['top', 'bottom'].map(function (side) {
+    var hint = parent.querySelector('.unread-hint[data-for="' + key + '"][data-side="' + side + '"]');
+    if (!hint) {
+      hint = document.createElement('button');
+      hint.className = 'unread-hint is-' + side + (withLabel ? ' has-label' : '');
+      hint.dataset.for = key;
+      hint.dataset.side = side;
+      hint.appendChild(icon('i-arrow-down', side === 'top' ? 'unread-hint-up' : ''));
+      hint.appendChild(document.createElement('span'));
+      hint.addEventListener('click', function () { scrollToUnread(box, side); });
+      parent.appendChild(hint);
+      if (!box.dataset.hintBound) {
+        box.dataset.hintBound = '1';
+        box.addEventListener('scroll', function () { unreadHintsFor(box, key, withLabel); }, { passive: true });
+      }
+    }
+    return hint;
+  });
+
+  var top = box.scrollTop, bottom = top + box.clientHeight;
+  var above = 0, below = 0;
+  var hidden = box.offsetParent === null || Channels.dragging;
+  Array.prototype.forEach.call(box.querySelectorAll('[data-unread]'), function (el) {
+    var n = Number(el.dataset.unread) || 0;
+    if (el.offsetTop + el.offsetHeight - UNREAD_EDGE_PX < top + UNREAD_EDGE_PX) above += n;
+    else if (el.offsetTop + UNREAD_EDGE_PX > bottom - UNREAD_EDGE_PX) below += n;
+  });
+  [[hints[0], above], [hints[1], below]].forEach(function (pair) {
+    var hint = pair[0], count = pair[1];
+    var show = !hidden && count > 0;
+    hint.classList.toggle('is-visible', show);
+    if (!show) return;
+    var label = count > 99 ? '99+' : String(count);
+    hint.querySelector('span').textContent = withLabel ? label + ' ' + t('unread') : label;
+    // pin the pill to the edge of the list it belongs to
+    hint.style.left = (box.offsetLeft + box.offsetWidth / 2) + 'px';
+    hint.style.top = hint.dataset.side === 'top'
+      ? (box.offsetTop + UNREAD_EDGE_PX) + 'px'
+      : (box.offsetTop + box.clientHeight - hint.offsetHeight - UNREAD_EDGE_PX) + 'px';
+  });
+}
+
+/** Scrolls to the nearest unread entry above (top pill) or below (bottom pill) the visible part. */
+function scrollToUnread(box, side) {
+  var top = box.scrollTop, bottom = top + box.clientHeight;
+  var items = Array.prototype.slice.call(box.querySelectorAll('[data-unread]'));
+  var target = side === 'top'
+    ? items.filter(function (el) { return el.offsetTop < top; }).pop()
+    : items.filter(function (el) { return el.offsetTop + el.offsetHeight > bottom; })[0];
+  if (!target) return;
+  var to = side === 'top'
+    ? target.offsetTop - UNREAD_EDGE_PX * 4
+    : target.offsetTop + target.offsetHeight - box.clientHeight + UNREAD_EDGE_PX * 4;
+  box.scrollTo({ top: Math.max(0, to), behavior: VoicedeckMotion.reduced ? 'auto' : 'smooth' });
+}
+
 function chip(item) {
   var btn = document.createElement('button');
   var current = item.kind === 'voice' ? currentVoiceId() : currentChatId();
@@ -406,7 +482,10 @@ function renderChannelList() {
     data.text.forEach(function (c) {
       var count = unreadByChannel[c.id] > 0 ? badge(unreadByChannel[c.id], 'dm-badge') : null;
       var row = channelRow({ id: c.id, name: c.name, kind: 'text', guildId: gid }, count);
-      if (count) row.classList.add('is-unread');
+      if (count) {
+        row.classList.add('is-unread');
+        row.dataset.unread = String(unreadByChannel[c.id]);
+      }
       box.appendChild(row);
     });
   }
@@ -434,7 +513,10 @@ function renderDirectList(box, hint, keepScroll) {
     time.className = 'dm-time';
     time.textContent = formatTime(c.lastTime);
     row.appendChild(time);
-    if (c.unread > 0) row.appendChild(badge(c.unread, 'dm-badge'));
+    if (c.unread > 0) {
+      row.appendChild(badge(c.unread, 'dm-badge'));
+      row.dataset.unread = String(c.unread);
+    }
     if (isFavorite(c.channelId)) row.appendChild(icon('i-star', 'channel-star'));
     attachPress(row, { id: c.channelId, name: c.name, kind: 'dm', guildId: DM_HOME });
     box.appendChild(row);

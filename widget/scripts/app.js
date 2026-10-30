@@ -180,6 +180,7 @@ function applyDemoOptions() {
   applyTexts();
   applyStyles();
   if (q.get('guild') === 'dms') saveStore({ guildId: '@dms' });
+  if (q.get('many') === '1') demoManyServers();
   var popup = q.get('popup');
   if (popup === 'audio') {
     if (q.get('side')) AudioUi.side = q.get('side');
@@ -630,6 +631,17 @@ function syncPopup(initial) {
   var muteBtn = $('popup-mute');
   muteBtn.textContent = m.localMute ? t('localUnmute') : t('localMute');
   muteBtn.classList.toggle('is-on', m.localMute);
+}
+
+/** Browser demo only (?many=1): a long server and channel list with unread messages out of view. */
+function demoManyServers() {
+  var names = ['Alpha', 'Bravo', 'Charlie', 'Delta', 'Echo', 'Foxtrot', 'Golf', 'Hotel', 'India', 'Juliet'];
+  var guilds = VoicedeckDemo.guilds().guilds;
+  names.forEach(function (n, i) { guilds.push({ id: '30000000000000010' + i, name: n, icon: null }); });
+  app.data.unread.guilds['300000000000000109'] = 12;
+  var text = VoicedeckDemo.channels('300000000000000001').text;
+  for (var i = 0; i < 14; i++) text.push({ id: '2199000000000000' + (i < 10 ? '0' : '') + i, name: 'channel-' + i });
+  app.data.unread.channels['219900000000000013'] = 2;
 }
 
 // ---------- audio devices (Discord's input/output settings) ----------

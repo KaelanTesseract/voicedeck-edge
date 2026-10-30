@@ -1,8 +1,9 @@
-## Voicedeck Edge 0.9.6 (Beta)
+## Voicedeck Edge 0.9.7 (Beta)
 
-- **Fixed: large servers didn't open** ("That didn't work"). The hub now returns the channel list after 10 seconds at the latest, even if Discord is still loading some channels; those are sorted by name until the next time. A single channel Discord can't answer for no longer breaks the whole list.
+- **Never miss new messages further down:** when a server or channel with new messages is scrolled out of view, a red pill at the top or bottom edge of the list shows how many – tap it to jump there.
+- **Fixed: large servers didn't open** ("That didn't work"). The hub now returns the channel list after 10 seconds at the latest, even if Discord is still loading some channels; those are sorted by name until the next time. A single channel Discord can't answer for no longer breaks the whole list, and channels Discord never answers for are skipped from then on, so the server opens quickly the next time.
 
-**Download:** `VoicedeckEdge-Setup-0.9.6.exe` – install over the previous version; the setup assistant then opens on the widget step so you can re-import the widget with one click.
+**Download:** `VoicedeckEdge-Setup-0.9.7.exe` – install over the previous version; the setup assistant then opens on the widget step so you can re-import the widget with one click.
 
 ---
 

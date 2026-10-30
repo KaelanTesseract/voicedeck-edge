@@ -3,7 +3,7 @@
   "id": "io.github.kaelantesseract.voicedeckedge",
   "name": "Voicedeck Edge",
   "description": "Control Discord from your XENEON EDGE: voice channel, mute, deafen, per-person volume, channels and chat. Requires the free Voicedeck Edge Hub on this PC.",
-  "version": "0.9.6",
+  "version": "0.9.7",
   "preview_icon": "resources/icon.svg",
   "min_app_version": "5.52",
   "min_framework_version": "1.9.0",

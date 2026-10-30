@@ -67,6 +67,7 @@ Done! A purple **V** in the taskbar shows that the helper (the *hub*) is running
 
 - **Pin a channel:** press and hold it until it fills up. Hold again to unpin.
 - **Arrange your servers like in Discord:** press and hold a server icon until it lifts, then drag it up or down. Discord doesn't share your own server order with other programs, so you set it once in the widget.
+- **New messages out of view:** a red pill at the top or bottom of the server column or channel list shows unread messages you'd have to scroll to – tap it to jump there.
 - **Red numbers on servers:** new messages Discord notifies you about (mentions, or every message on servers set to *All messages*). They disappear when you open that channel in the widget – Discord doesn't tell the widget what you've read in the app itself.
 - **Leave:** press and hold *Leave* until the red bar is full. (Can be switched to a single tap in the settings.)
 - **Direct messages:** speech-bubble icon at the top of the server column. Conversations appear as soon as someone writes to you while the hub is running.
