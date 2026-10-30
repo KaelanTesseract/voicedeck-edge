@@ -1,3 +1,11 @@
+## Voicedeck Edge 0.9.3 (Beta)
+
+- **Smoother server sorting:** the server now follows your finger, the others slide aside, and you can move it any distance in one go (the column scrolls along at the edges). In 0.9.2 a server only moved one position at a time on the XENEON EDGE.
+
+**Download:** `VoicedeckEdge-Setup-0.9.3.exe` – install over the previous version and re-import the widget in iCUE (button in the setup assistant).
+
+---
+
 ## Voicedeck Edge 0.9.2 (Beta)
 
 - **Arrange your servers:** press and hold a server icon, then drag it – set it up once like your Discord sidebar (Discord doesn't share your own order with other programs).

@@ -204,68 +204,113 @@ function renderGuilds() {
 
 /**
  * Press and hold a server, then drag it up or down to arrange the column like in Discord.
- * The order is saved per widget (server IDs only).
+ * The DOM stays untouched while dragging (moving the touched element makes Windows touch lose the
+ * finger): the server follows the finger with a transform, the others slide aside, and the new
+ * order is applied on release. Saved per widget (server IDs only).
  */
 var GUILD_HOLD_MS = 450;
 var GUILD_SLOP_PX = 10;
+var GUILD_EDGE_PX = 48;     // auto-scroll zone at the top/bottom of the column
+var GUILD_SCROLL_PX = 9;    // per animation frame
 
 function attachGuildDrag(btn, box) {
   var hold = null;
+  var drag = null;
 
   function cancelHold() {
     if (hold) { clearTimeout(hold.timer); hold = null; }
   }
 
   btn.addEventListener('pointerdown', function (e) {
-    if (!e.isPrimary || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    if (!e.isPrimary || (e.pointerType === 'mouse' && e.button !== 0) || drag) return;
     cancelHold();
-    hold = { x: e.clientX, y: e.clientY, id: e.pointerId, active: false };
-    hold.timer = setTimeout(function () {
-      if (!hold) return;
-      hold.active = true;
-      Channels.dragging = true;
-      btn.classList.add('is-dragging');
-      box.classList.add('is-sorting');
-      try { btn.setPointerCapture(hold.id); } catch (err) { /* pointer already gone */ }
-    }, GUILD_HOLD_MS);
+    hold = { x: e.clientX, y: e.clientY, id: e.pointerId };
+    hold.timer = setTimeout(function () { var h = hold; hold = null; if (h) begin(h); }, GUILD_HOLD_MS);
   });
-
   btn.addEventListener('pointermove', function (e) {
-    if (!hold || e.pointerId !== hold.id) return;
-    if (!hold.active) {
-      // moving before the hold completes means scrolling or swiping, not sorting
-      if (Math.abs(e.clientX - hold.x) > GUILD_SLOP_PX || Math.abs(e.clientY - hold.y) > GUILD_SLOP_PX) cancelHold();
-      return;
-    }
-    var r = box.getBoundingClientRect();
-    if (e.clientY < r.top + 40) box.scrollTop -= 8;
-    else if (e.clientY > r.bottom - 40) box.scrollTop += 8;
-    var siblings = Array.prototype.filter.call(box.querySelectorAll('.guild[data-guild-id]'), function (el) { return el !== btn; });
-    var before = siblings.find(function (el) {
-      var s = el.getBoundingClientRect();
-      return e.clientY < s.top + s.height / 2;
-    });
-    if (before) { if (btn.nextSibling !== before) box.insertBefore(btn, before); }
-    else if (siblings.length && box.lastElementChild !== btn) box.appendChild(btn);
+    // moving before the hold completes means scrolling or swiping, not sorting
+    if (hold && e.pointerId === hold.id &&
+        (Math.abs(e.clientX - hold.x) > GUILD_SLOP_PX || Math.abs(e.clientY - hold.y) > GUILD_SLOP_PX)) cancelHold();
+  });
+  ['pointerup', 'pointercancel'].forEach(function (t) {
+    btn.addEventListener(t, function (e) { if (hold && e.pointerId === hold.id) cancelHold(); });
   });
 
-  function finish(e) {
-    if (!hold || e.pointerId !== hold.id) return;
-    var wasActive = hold.active;
-    cancelHold();
-    if (!wasActive) return;
+  function begin(h) {
+    var items = Array.prototype.slice.call(box.querySelectorAll('.guild[data-guild-id]'));
+    var index = items.indexOf(btn);
+    if (index < 0) return;
+    var pitch = items.length > 1 ? items[1].offsetTop - items[0].offsetTop : btn.offsetHeight;
+    drag = {
+      id: h.id, items: items, from: index, to: index, pitch: pitch,
+      startY: h.y, lastY: h.y, startScroll: box.scrollTop, frame: 0
+    };
+    Channels.dragging = true;
+    btn.classList.remove('is-pressed');
+    btn.classList.add('is-dragging');
+    box.classList.add('is-sorting');
+    try { btn.setPointerCapture(h.id); } catch (err) { /* pointer already gone */ }
+    window.addEventListener('pointermove', onMove, true);
+    window.addEventListener('pointerup', onEnd, true);
+    window.addEventListener('pointercancel', onEnd, true);
+    layout();
+    drag.frame = requestAnimationFrame(autoScroll);
+  }
+
+  function onMove(e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    drag.lastY = e.clientY;
+    layout();
+  }
+
+  /** Places the dragged server under the finger and slides the others into the gap. */
+  function layout() {
+    var dy = drag.lastY - drag.startY + (box.scrollTop - drag.startScroll);
+    var to = Math.max(0, Math.min(drag.items.length - 1, drag.from + Math.round(dy / drag.pitch)));
+    drag.to = to;
+    drag.items.forEach(function (el, i) {
+      if (el === btn) { el.style.transform = 'translateY(' + dy + 'px) scale(1.12)'; return; }
+      var shift = 0;
+      if (drag.from < to && i > drag.from && i <= to) shift = -drag.pitch;
+      else if (to < drag.from && i >= to && i < drag.from) shift = drag.pitch;
+      el.style.transform = shift ? 'translateY(' + shift + 'px)' : '';
+    });
+  }
+
+  function autoScroll() {
+    if (!drag) return;
+    var r = box.getBoundingClientRect();
+    var before = box.scrollTop;
+    if (drag.lastY < r.top + GUILD_EDGE_PX) box.scrollTop -= GUILD_SCROLL_PX;
+    else if (drag.lastY > r.bottom - GUILD_EDGE_PX) box.scrollTop += GUILD_SCROLL_PX;
+    if (box.scrollTop !== before) layout();
+    drag.frame = requestAnimationFrame(autoScroll);
+  }
+
+  function onEnd(e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    var d = drag;
+    drag = null;
+    cancelAnimationFrame(d.frame);
+    window.removeEventListener('pointermove', onMove, true);
+    window.removeEventListener('pointerup', onEnd, true);
+    window.removeEventListener('pointercancel', onEnd, true);
+    d.items.forEach(function (el) { el.style.transform = ''; });
     btn.classList.remove('is-dragging');
     box.classList.remove('is-sorting');
     btn.dataset.dropped = '1'; // the click that follows the drop must not select the server
     setTimeout(function () { delete btn.dataset.dropped; }, 400);
-    var order = Array.prototype.map.call(box.querySelectorAll('.guild[data-guild-id]'), function (el) { return el.dataset.guildId; });
+
+    var order = d.items.map(function (el) { return el.dataset.guildId; });
+    var moved = order.splice(d.from, 1)[0];
+    order.splice(d.to, 0, moved);
     Channels.dragging = false;
-    saveStore({ guildOrder: order });
-    toast(t('orderSaved'), 'info');
+    if (d.to !== d.from) {
+      saveStore({ guildOrder: order });
+      toast(t('orderSaved'), 'info');
+    }
     renderChannels();
   }
-  btn.addEventListener('pointerup', finish);
-  btn.addEventListener('pointercancel', finish);
 }
 
 // While a server is being dragged the column must not scroll under the finger.
