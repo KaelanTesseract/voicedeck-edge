@@ -17,7 +17,11 @@ internal sealed class HubController
     private static readonly string[] ChatEvents = ["MESSAGE_CREATE", "MESSAGE_UPDATE", "MESSAGE_DELETE"];
     private static readonly TimeSpan GuildCacheTime = TimeSpan.FromMinutes(1);
     private static readonly TimeSpan ChannelCacheTime = TimeSpan.FromSeconds(30);
-    private const int ParallelChannelLookups = 8;
+    private const int ParallelChannelLookups = 12;
+    // Large servers: Discord may have to fetch uncached channels from the network. The widget waits 15 s,
+    // so the list is returned after this deadline with whatever details arrived (the rest sorted by name).
+    private static readonly TimeSpan ChannelListDeadline = TimeSpan.FromSeconds(10);
+    private static readonly TimeSpan ChannelLookupTimeout = TimeSpan.FromSeconds(6);
 
     private readonly StateStore _state;
     private readonly Channel<Func<Task>> _queue = Channel.CreateUnbounded<Func<Task>>(new UnboundedChannelOptions { SingleReader = true });
@@ -345,13 +349,31 @@ internal sealed class HubController
             .ToList();
 
         // One pipe, many in-flight commands (matched by nonce): a few at a time instead of one by one.
+        // A channel that fails or is too slow must not sink the whole list.
+        var started = DateTime.UtcNow;
+        using var deadline = new CancellationTokenSource(ChannelListDeadline);
         using var gate = new SemaphoreSlim(ParallelChannelLookups);
         var details = await Task.WhenAll(wanted.Select(async ch =>
         {
-            await gate.WaitAsync();
             try
             {
-                return (Channel: ch, Detail: await ipc.CommandAsync("GET_CHANNEL", new JsonObject { ["channel_id"] = ch.Str("id") }));
+                await gate.WaitAsync(deadline.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                return (Channel: ch, Detail: (JsonNode?)null);
+            }
+            try
+            {
+                var left = ChannelListDeadline - (DateTime.UtcNow - started);
+                if (left <= TimeSpan.Zero) return (Channel: ch, Detail: (JsonNode?)null);
+                var detail = await ipc.CommandAsync("GET_CHANNEL", new JsonObject { ["channel_id"] = ch.Str("id") },
+                    timeout: left < ChannelLookupTimeout ? left : ChannelLookupTimeout);
+                return (Channel: ch, Detail: detail);
+            }
+            catch (Exception ex) when (ex is DiscordRpcException or TimeoutException)
+            {
+                return (Channel: ch, Detail: (JsonNode?)null);
             }
             finally
             {
@@ -361,26 +383,30 @@ internal sealed class HubController
 
         var voice = new List<(int Pos, JsonObject Item)>();
         var text = new List<(int Pos, JsonObject Item)>();
+        var missing = 0;
         foreach (var (ch, detail) in details)
         {
+            if (detail == null) missing++;
+            var pos = detail == null ? int.MaxValue : detail.Int("position"); // unknown position: after the known ones, by name
             var item = new JsonObject { ["id"] = ch.Str("id"), ["name"] = ch.Str("name") ?? "" };
             if (ch.Int("type") is 2 or 13)
             {
                 item["members"] = detail.Arr("voice_states").Count;
-                voice.Add((detail.Int("position"), item));
+                voice.Add((pos, item));
             }
             else
             {
-                text.Add((detail.Int("position"), item));
+                text.Add((pos, item));
             }
         }
+        Log.Info($"Kanalliste: {details.Length} Kanäle in {(DateTime.UtcNow - started).TotalMilliseconds:0} ms, {missing} ohne Details.");
 
         static JsonArray Sorted(List<(int Pos, JsonObject Item)> list) =>
             new(list.OrderBy(c => c.Pos).ThenBy(c => c.Item.Str("name"), StringComparer.CurrentCultureIgnoreCase)
                 .Select(c => (JsonNode?)c.Item).ToArray());
 
         var result = new JsonObject { ["guildId"] = guildId, ["voice"] = Sorted(voice), ["text"] = Sorted(text) };
-        _channelCache[guildId] = (DateTime.UtcNow, result);
+        if (missing == 0) _channelCache[guildId] = (DateTime.UtcNow, result); // incomplete lists are asked again next time
         return result.DeepClone();
     }
 

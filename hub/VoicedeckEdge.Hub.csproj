@@ -8,7 +8,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>VoicedeckEdge.Hub</RootNamespace>
     <AssemblyName>VoicedeckEdgeHub</AssemblyName>
-    <Version>0.9.5</Version>
+    <Version>0.9.6</Version>
     <Product>Voicedeck Edge Hub</Product>
     <Company>KaelanTesseract</Company>
     <Copyright>Copyright (c) 2026 KaelanTesseract</Copyright>
