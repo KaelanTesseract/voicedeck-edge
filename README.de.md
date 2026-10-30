@@ -25,7 +25,7 @@ Kostenlos und Open Source. Kein Konto bei uns, keine Server, kein Tracking.
 
 **Außerdem dabei**
 
-- 🎙️ **Stumm, Taub, Sprachaktivierung / Push-to-Talk** – große Knöpfe, die unter dem Finger einsinken.
+- 🎙️ **Stumm, Taub, Sprachaktivierung / Push to Talk** – große Knöpfe, die unter dem Finger einsinken.
 - 🎚️ **Audiogeräte** – Mikrofon und Kopfhörer/Lautsprecher für Discord wählen, Eingangs- und Ausgangslautstärke einstellen.
 - 📞 **Kanal verlassen** per Gedrückthalten – kein versehentliches Auflegen.
 - ⭐ **Favoriten** – Kanal lange drücken, dann steht er oben.
