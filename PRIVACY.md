@@ -24,14 +24,16 @@ Sonst nichts: keine Telemetrie, keine Analyse, keine Absturzberichte, keine Werb
 | Was | Wo | Wie lange |
 |---|---|---|
 | Deine Discord-Anmeldung (Tokens) | `%APPDATA%\VoicedeckEdge\tokens.bin`, mit Windows verschlüsselt (nur für dein Windows-Konto lesbar) | bis „Abmelden und alle Daten löschen“ oder Deinstallation |
-| Client-ID deiner Discord-App, Einstellungen | `%APPDATA%\VoicedeckEdge\settings.json` | bis Löschen/Deinstallation |
+| Client-ID deiner Discord-App, Einstellungen, zuletzt gestartete Version (damit der Hub nach einem Update den Assistenten öffnet) | `%APPDATA%\VoicedeckEdge\settings.json` | bis Löschen/Deinstallation |
 | Gekoppelte Widgets | `%APPDATA%\VoicedeckEdge\pairings.json` – nur ein Prüfwert (Hash), nie der Schlüssel selbst | bis du die Kopplung aufhebst |
 | Technisches Protokoll | `%LOCALAPPDATA%\VoicedeckEdge\logs\` – ohne Namen, IDs, Nachrichten oder Tokens | höchstens 7 Tage |
-| Im Widget (iCUE) | Kopplungsschlüssel, angeheftete Kanäle (ID, Name), zuletzt gewählter Server und Chat | bis du das Widget entfernst |
+| Im Widget (iCUE) | Kopplungsschlüssel, angeheftete Kanäle (ID, Name), deine Server-Reihenfolge (nur Server-IDs), zuletzt gewählter Server und Chat | bis du das Widget entfernst |
 
 **Nie gespeichert** werden Chat-Nachrichten, Direktnachrichten, Bilder, Namen und Profilbilder anderer Personen oder Teilnehmerlisten. Sie liegen nur im Arbeitsspeicher, solange sie angezeigt werden.
 
-**Direktnachrichten:** Damit private Unterhaltungen im Widget erscheinen können, liest der Hub deine Discord-**Benachrichtigungen** (Berechtigung „Benachrichtigungen lesen“). Er beachtet davon nur Direktnachrichten und merkt sich die Unterhaltungen ausschließlich im Arbeitsspeicher – nach einem Neustart von Hub oder Discord ist die Liste leer.
+**Direktnachrichten und rote Zahlen:** Damit private Unterhaltungen und neue Server-Nachrichten im Widget erscheinen können, liest der Hub deine Discord-**Benachrichtigungen** (Berechtigung „Benachrichtigungen lesen“). Er merkt sich davon nur die Unterhaltungen (Name, Bild, Zeit) und die Anzahl neuer Nachrichten pro Kanal – ausschließlich im Arbeitsspeicher. Nach einem Neustart von Hub oder Discord ist beides leer.
+
+**Seiten wechseln per Wischen:** Wischst du auf dem Widget waagerecht, drückt der Hub für dich das iCUE-Tastenkürzel Strg + Alt + Umschalt + Pfeil links/rechts. Andere Tasten drückt er nie, und nur nach einem Wischen auf dem Widget. Abschaltbar in den Widget-Einstellungen.
 
 ### Deine Kontrolle
 
@@ -67,14 +69,16 @@ Nothing else: no telemetry, no analytics, no crash reports, no ads, no tracking.
 | What | Where | How long |
 |---|---|---|
 | Your Discord sign-in (tokens) | `%APPDATA%\VoicedeckEdge\tokens.bin`, encrypted by Windows (readable only by your Windows account) | until "Sign out and delete all data" or uninstall |
-| Client ID of your Discord app, settings | `%APPDATA%\VoicedeckEdge\settings.json` | until deleted/uninstalled |
+| Client ID of your Discord app, settings, last started version (so the hub can open the assistant after an update) | `%APPDATA%\VoicedeckEdge\settings.json` | until deleted/uninstalled |
 | Paired widgets | `%APPDATA%\VoicedeckEdge\pairings.json` – only a hash, never the key itself | until you unpair |
 | Technical log | `%LOCALAPPDATA%\VoicedeckEdge\logs\` – no names, IDs, messages or tokens | at most 7 days |
-| Inside the widget (iCUE) | pairing key, pinned channels (ID, name), last server and chat | until you remove the widget |
+| Inside the widget (iCUE) | pairing key, pinned channels (ID, name), your server order (server IDs only), last server and chat | until you remove the widget |
 
 **Never stored:** chat messages, direct messages, images, other people's names and avatars, member lists. They exist only in memory while shown.
 
-**Direct messages:** so that private conversations can appear in the widget, the hub reads your Discord **notifications** (permission "read notifications"). It only looks at direct messages and keeps the conversation list in memory only – after restarting the hub or Discord the list is empty.
+**Direct messages and red numbers:** so that private conversations and new server messages can appear in the widget, the hub reads your Discord **notifications** (permission "read notifications"). Of these it keeps only the conversations (name, picture, time) and the number of new messages per channel – in memory only. After restarting the hub or Discord both are empty.
+
+**Swiping to change pages:** when you swipe sideways on the widget, the hub presses iCUE's shortcut Ctrl + Alt + Shift + Left/Right arrow for you. It never presses any other key, and only after a swipe on the widget. Can be switched off in the widget settings.
 
 ### You are in control
 

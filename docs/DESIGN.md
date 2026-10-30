@@ -80,11 +80,15 @@ Jede Webseite im Browser könnte `ws://localhost:47820` ansprechen. Darum:
 { "op": "voice.leave", "id": 4 } | { "op": "voice.join", "channelId": "…", "id": 5 }
 { "op": "user.setVolume", "userId": "…", "volume": 140, "id": 6 } | { "op": "user.setMute", "userId": "…", "mute": true } | { "op": "user.reset", "userId": "…" }
 { "op": "guilds.list" } | { "op": "channels.list", "guildId": "…" } | { "op": "chat.open", "channelId": "…" } | { "op": "chat.close" }
+{ "op": "audio.setInput", "deviceId": "…" } | { "op": "audio.setOutput", "deviceId": "…" }      // nur Geräte aus Discords aktueller Liste
+{ "op": "audio.setInputVolume", "volume": 80 } | { "op": "audio.setOutputVolume", "volume": 150 } // Eingang 0–100, Ausgang 0–200
+{ "op": "edge.page", "dir": "next|prev" }                                                       // drückt das iCUE-Kürzel (Wischen)
 
 // Hub → Widget
 { "t": "pair_pending" } → { "t": "paired", "token": "…" } | { "t": "pair_denied" }
 { "t": "welcome", "proto": 1, "hubVersion": "0.1.0", "imageBase": "http://localhost:47820", "imageKey": "…" }
-{ "t": "snapshot", "data": { "status", "me", "voice", "settings", "chat" } }   // vollständiger Zustand nach welcome
+{ "t": "snapshot", "data": { "status", "me", "voice", "settings", "chat", "dms", "unread" } }   // vollständiger Zustand nach welcome
+// settings.input/output = { deviceId, volume, devices: [{ id, name }] } · unread = { guilds: {id: n}, channels: {id: n} }
 { "t": "state", "section": "voice", "data": { … } }                            // ganze Sektion bei jeder Änderung
 { "t": "speaking", "userId": "…", "speaking": true }                           // häufig, darum einzeln
 { "t": "result", "id": 6, "ok": true, "data": … } | { "t": "result", "id": 6, "ok": false, "error": "invalid_args" }

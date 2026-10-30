@@ -181,7 +181,10 @@ function applyDemoOptions() {
   applyStyles();
   if (q.get('guild') === 'dms') saveStore({ guildId: '@dms' });
   var popup = q.get('popup');
-  if (popup) {
+  if (popup === 'audio') {
+    if (q.get('side')) AudioUi.side = q.get('side');
+    setTimeout(openAudio, 50);
+  } else if (popup) {
     setTimeout(function () {
       var m = app.data.voice.members.filter(function (x) { return x.name === popup; })[0];
       if (m) openPopup(m.id);

@@ -20,7 +20,8 @@ Kostenlos und Open Source. Kein Konto bei uns, keine Server, kein Tracking.
 |---|---|
 | ![Sprachkanal](docs/images/de/m-voice.png) | **Dein Sprachkanal auf einen Blick**<br>Alle im Kanal mit Bild und Namen. Ein grüner Ring zeigt, wer spricht, rote Symbole zeigen, wer stumm oder taub ist. |
 | ![Lautstärke pro Person](docs/images/de/m-volume.png) | **Lautstärke für jede Person**<br>Tippe auf jemanden, um ihn lauter oder leiser zu machen (0–200 %) oder nur für dich stummzuschalten. Bei 100 % rastet der Regler ein. |
-| ![Direktnachrichten](docs/images/de/m-direct.png) | **Server, Kanäle und Direktnachrichten**<br>Deine Server in einer Spalte wie in Discord. Tippe auf einen Sprachkanal zum Beitreten, auf einen Textkanal zum Lesen. Neue Direktnachrichten erscheinen mit rotem Zähler. |
+| ![Audiogeräte](docs/images/de/m-audio.png) | **Mikrofon und Kopfhörer**<br>Der Knopf *Audio* wechselt Discords Eingabe- und Ausgabegerät und stellt ihre Lautstärke ein – praktisch, wenn du zwischen Headset und Lautsprechern wechselst. |
+| ![Direktnachrichten](docs/images/de/m-direct.png) | **Server, Kanäle und Direktnachrichten**<br>Deine Server in einer Spalte wie in Discord – gedrückt halten zum Verschieben. Tippe auf einen Sprachkanal zum Beitreten, auf einen Textkanal zum Lesen. Rote Zahlen zeigen neue Nachrichten an Servern, Kanälen und Direktnachrichten. |
 | ![Privatmodus](docs/images/de/m-private.png) | **Privatmodus fürs Streamen**<br>Ein Tipp auf das Auge versteckt Chat-Texte, Bilder und Emojis, bis du auf den Chat tippst. |
 
 **Außerdem dabei**
@@ -97,6 +98,8 @@ Tray-Symbol → **Abmelden und alle Daten löschen** entfernt jederzeit alles. D
 - Push to Talk: Das Widget schaltet den Modus um, die Taste drücken kann es nicht.
 - Kanal-Kategorien können nicht angezeigt werden (Discord gibt sie an lokale Apps nicht heraus).
 - Direktnachrichten erscheinen, sobald dir jemand schreibt, während der Hub läuft; nach einem Neustart ist die Liste leer.
+- Deine Server-Reihenfolge wird nicht aus Discord übernommen (Discord gibt sie nicht heraus) – stell sie einmal im Widget ein.
+- Rote Zahlen zählen Nachrichten, für die dich Discord benachrichtigt, solange der Hub läuft. Was du in Discord selbst liest, bleibt gezählt, bis du den Kanal im Widget öffnest.
 
 ## Hilfe & Rückmeldung
 

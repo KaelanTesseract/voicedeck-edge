@@ -20,7 +20,8 @@ Free and open source. No account with us, no servers, no tracking.
 |---|---|
 | ![Voice channel](docs/images/en/m-voice.png) | **Your voice channel at a glance**<br>Everyone in the channel with avatar and name. A green ring shows who is speaking, red icons show who is muted or deafened. |
 | ![Volume per person](docs/images/en/m-volume.png) | **Volume for each person**<br>Tap someone to make them louder or quieter (0–200 %) or mute them just for you. The slider clicks into place at 100 %. |
-| ![Direct messages](docs/images/en/m-direct.png) | **Servers, channels and direct messages**<br>Your servers in a column like in Discord. Tap a voice channel to join, a text channel to read it. New direct messages show up with a red counter. |
+| ![Audio devices](docs/images/en/m-audio.png) | **Microphone and headphones**<br>The *Audio* button switches Discord's input and output device and sets their volume – handy when you swap between headset and speakers. |
+| ![Direct messages](docs/images/en/m-direct.png) | **Servers, channels and direct messages**<br>Your servers in a column like in Discord – press and hold one to move it. Tap a voice channel to join, a text channel to read it. Red numbers show new messages on servers, channels and direct messages. |
 | ![Private mode](docs/images/en/m-private.png) | **Private mode for streaming**<br>One tap on the eye button hides chat text, pictures and emojis until you tap the chat. |
 
 **Also included**
@@ -97,6 +98,8 @@ Tray icon → **Sign out and delete all data** removes everything at any time. D
 - Push to talk: the widget switches the mode; it can't press the key for you.
 - Channel categories can't be shown (Discord doesn't provide them to local apps).
 - Direct messages appear once someone writes to you while the hub runs; the list is not kept after a restart.
+- Your server order isn't taken over from Discord (Discord keeps it private) – arrange it once in the widget.
+- Red numbers count messages Discord notifies you about while the hub runs. Messages you read in Discord itself stay counted until you open the channel in the widget.
 
 ## Help & feedback
 
