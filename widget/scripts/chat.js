@@ -129,6 +129,40 @@ function messageExtras(m) {
   return parts.join('  ');
 }
 
+/** Reactions under a message like in Discord: emoji + count, highlighted when one of them is yours. */
+function appendReactions(body, reactions) {
+  if (!reactions || !reactions.length) return;
+  var box = document.createElement('div');
+  box.className = 'message-reactions';
+  reactions.forEach(function (r) {
+    var chip = document.createElement('span');
+    chip.className = 'reaction' + (r.me ? ' is-mine' : '');
+    var url = r.image ? imageUrl(r.image) : null;
+    if (url) {
+      var img = document.createElement('img');
+      img.className = 'emoji reaction-emoji';
+      img.alt = '';
+      img.src = url;
+      img.draggable = false;
+      img.onerror = function () { this.remove(); };
+      chip.appendChild(img);
+    } else if (r.emoji) {
+      var glyph = document.createElement('span');
+      glyph.className = 'reaction-glyph';
+      glyph.textContent = r.emoji;
+      chip.appendChild(glyph);
+    } else {
+      return;
+    }
+    var count = document.createElement('span');
+    count.className = 'reaction-count';
+    count.textContent = String(r.count);
+    chip.appendChild(count);
+    box.appendChild(chip);
+  });
+  if (box.children.length) body.appendChild(box);
+}
+
 function appendImages(body, images) {
   if (!images || !images.length) return;
   var box = document.createElement('div');
@@ -249,6 +283,7 @@ function renderChat() {
       body.appendChild(content);
     }
     appendImages(body, m.images);
+    appendReactions(body, m.reactions);
     var extras = messageExtras(m);
     if (extras) {
       var extra = document.createElement('div');

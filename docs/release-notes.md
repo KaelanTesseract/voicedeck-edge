@@ -1,3 +1,11 @@
+## Voicedeck Edge 0.9.5 (Beta)
+
+- **Reactions in the chat:** emoji reactions appear under messages like in Discord – with count, server emojis as pictures, and highlighted when one of them is yours. Hidden in private mode.
+
+**Download:** `VoicedeckEdge-Setup-0.9.5.exe` – install over the previous version; the setup assistant then opens on the widget step so you can re-import the widget with one click.
+
+---
+
 ## Voicedeck Edge 0.9.4 (Beta)
 
 - **Audio devices:** new *Audio* button in the control bar. Choose your microphone and your speakers/headphones for Discord and set the input and output volume – right on the Edge.

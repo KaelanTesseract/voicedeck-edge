@@ -27,10 +27,14 @@ internal sealed record AudioSide(string? DeviceId, int Volume, IReadOnlyList<Aud
 
 internal sealed record DirectConversation(string ChannelId, string Name, string? Avatar, string LastTime, int Unread);
 
+/// <summary>A reaction under a message: a unicode <paramref name="Emoji"/> or a server emoji <paramref name="Image"/>.</summary>
+internal sealed record ChatReaction(string? Emoji, string? Image, int Count, bool Me);
+
 /// <summary>Attachments counts only non-image files; images are listed in <see cref="Images"/>.</summary>
 internal sealed record ChatMessage(
     string Id, string AuthorId, string Author, string? Avatar, string Content,
-    string Time, bool Edited, int Attachments, bool HasEmbed, IReadOnlyList<ChatImage> Images);
+    string Time, bool Edited, int Attachments, bool HasEmbed, IReadOnlyList<ChatImage> Images,
+    IReadOnlyList<ChatReaction> Reactions);
 
 /// <summary>
 /// The widget-facing state. Lives only in memory. Every mutation raises <see cref="SectionChanged"/>
@@ -421,8 +425,28 @@ internal sealed partial class StateStore(MediaRegistry? media = null)
             Edited: msg.Str("edited_timestamp") != null,
             Attachments: otherFiles,
             HasEmbed: otherEmbeds > 0,
-            Images: images);
+            Images: images,
+            Reactions: MapReactions(msg));
     }
+
+    private const int MaxReactionsPerMessage = 20;
+
+    /// <summary>reactions: [{ emoji: { id, name, animated }, count, me }] – server emojis go through the image proxy.</summary>
+    internal static IReadOnlyList<ChatReaction> MapReactions(JsonObject msg) =>
+        msg.Arr("reactions").OfType<JsonObject>()
+            .Select(r =>
+            {
+                var emoji = r["emoji"] as JsonObject;
+                var count = Math.Clamp(r.Int("count"), 0, 9999);
+                if (emoji == null || count == 0) return null;
+                var id = emoji.Str("id");
+                if (id != null && Json.IsSnowflake(id))
+                    return new ChatReaction(null, $"/img/emojis/{(emoji.Bool("animated") ? "a/" : "")}{id}", count, r.Bool("me"));
+                return emoji.Str("name") is { Length: > 0 and <= 32 } name ? new ChatReaction(name, null, count, r.Bool("me")) : null;
+            })
+            .OfType<ChatReaction>()
+            .Take(MaxReactionsPerMessage)
+            .ToList();
 
     private static bool IsImageAttachment(JsonObject a) =>
         a.Str("content_type")?.StartsWith("image/", StringComparison.Ordinal) == true

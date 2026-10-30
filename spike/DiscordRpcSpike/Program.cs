@@ -109,6 +109,47 @@ try
     report["grantedScopes"] = authn["data"]?["scopes"]?.DeepClone();
     Say("Angemeldet. Lese Struktur der Daten …");
 
+    if (args.Contains("--reactions"))
+    {
+        // Do messages from GET_CHANNEL carry reactions? Records only structure and counts – no texts, names or IDs.
+        var guildList = (await ipc.CommandAsync("GET_GUILDS", new JsonObject(), TimeSpan.FromSeconds(10)))["data"]?["guilds"] as JsonArray ?? [];
+        int channelsChecked = 0, messageCount = 0, withReactions = 0;
+        var messageShapes = new List<JsonNode?>();
+        JsonNode? reactionShape = null;
+        foreach (var guild in guildList.OfType<JsonObject>())
+        {
+            if (channelsChecked >= 40) break;
+            var list = await ipc.CommandAsync("GET_CHANNELS", new JsonObject { ["guild_id"] = guild["id"]?.DeepClone() }, TimeSpan.FromSeconds(10));
+            foreach (var channel in (list["data"]?["channels"] as JsonArray ?? []).OfType<JsonObject>())
+            {
+                if (channelsChecked >= 40) break;
+                if (channel["type"]?.GetValue<int>() is not (0 or 5)) continue;
+                var full = await ipc.CommandAsync("GET_CHANNEL", new JsonObject { ["channel_id"] = channel["id"]?.DeepClone() }, TimeSpan.FromSeconds(10));
+                channelsChecked++;
+                foreach (var m in (full["data"]?["messages"] as JsonArray ?? []).OfType<JsonObject>())
+                {
+                    messageCount++;
+                    messageShapes.Add(Shape(m));
+                    if (m["reactions"] is JsonArray r && r.Count > 0)
+                    {
+                        withReactions++;
+                        reactionShape ??= Shape(r);
+                    }
+                }
+            }
+        }
+        steps["reactions"] = new JsonObject
+        {
+            ["channelsChecked"] = channelsChecked,
+            ["messages"] = messageCount,
+            ["messagesWithReactions"] = withReactions,
+            ["reactionShape"] = reactionShape,
+            ["messageShape"] = messageShapes.Count == 0 ? null : MergeShapes(messageShapes),
+        };
+        accessToken = null; // no revoke: same Discord app and account as the real hub, a revoke could sign it out too
+        return Finish(0, withReactions > 0 ? "Reaktionen gefunden." : "Keine Reaktionen in den Nachrichten.");
+    }
+
     if (dmMode)
     {
         // Direct messages: RPC has no "list DMs" command. Probe whether notifications reveal DM channels

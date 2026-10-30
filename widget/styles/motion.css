@@ -146,7 +146,8 @@ img.blur-up.is-instant { transition: none; }
 img.blur-up.is-broken { display: none; }
 
 .view-chat.is-private .message-image img,
-.view-chat.is-private .emoji { visibility: hidden; }
+.view-chat.is-private .emoji,
+.view-chat.is-private .reaction > * { visibility: hidden; }
 
 .new-items-pill {
   position: absolute;

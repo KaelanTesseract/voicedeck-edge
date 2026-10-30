@@ -46,7 +46,7 @@ var VoicedeckDemo = (function () {
 
   function message(id, authorId, author, minutes, content, extra) {
     var m = { id: id, authorId: authorId, author: author, avatar: null, content: content,
-      time: minutesAgo(minutes), edited: false, attachments: 0, hasEmbed: false, images: [] };
+      time: minutesAgo(minutes), edited: false, attachments: 0, hasEmbed: false, images: [], reactions: [] };
     for (var k in extra) m[k] = extra[k];
     return m;
   }
@@ -120,9 +120,12 @@ var VoicedeckDemo = (function () {
       channelName: dm || (found ? found.channel.name : 'general'),
       messages: [
         message('900000000000000001', '100000000000000003', 'Robin', 42, 'Who is up for a round later?'),
-        message('900000000000000002', '100000000000000002', 'Sam', 40, 'Count me in, after dinner'),
+        message('900000000000000002', '100000000000000002', 'Sam', 40, 'Count me in, after dinner', { reactions: [{ emoji: '👍', image: null, count: 2, me: false }] }),
         message('900000000000000003', '100000000000000002', 'Sam', 39, 'maybe 20:30?'),
-        message('900000000000000004', '100000000000000006', 'Mika', 25, 'Sunset from the balcony', { images: [{ path: 'resources/demo/sunset.jpg', width: 640, height: 360 }] }),
+        message('900000000000000004', '100000000000000006', 'Mika', 25, 'Sunset from the balcony', {
+          images: [{ path: 'resources/demo/sunset.jpg', width: 640, height: 360 }],
+          reactions: [{ emoji: '❤️', image: null, count: 3, me: true }, { emoji: '😍', image: null, count: 1, me: false }]
+        }),
         message('900000000000000007', '100000000000000006', 'Mika', 24, '', { attachments: 1 }),
         message('900000000000000008', '100000000000000003', 'Robin', 20, '🎉🔥'),
         message('900000000000000005', '100000000000000004', 'Kim', 12, 'Nice clip <@100000000000000006> 😄', { edited: true }),
