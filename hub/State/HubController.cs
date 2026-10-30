@@ -21,7 +21,10 @@ internal sealed class HubController
     // Large servers: Discord may have to fetch uncached channels from the network. The widget waits 15 s,
     // so the list is returned after this deadline with whatever details arrived (the rest sorted by name).
     private static readonly TimeSpan ChannelListDeadline = TimeSpan.FromSeconds(10);
-    private static readonly TimeSpan ChannelLookupTimeout = TimeSpan.FromSeconds(6);
+    private static readonly TimeSpan ChannelLookupTimeout = TimeSpan.FromSeconds(4);
+    // Channels Discord never answers for (usually ones you cannot see): skipped from then on, so a server
+    // with such channels does not wait for them on every visit. Memory only, cleared on reconnect.
+    private readonly ConcurrentDictionary<string, bool> _silentChannels = new();
 
     private readonly StateStore _state;
     private readonly Channel<Func<Task>> _queue = Channel.CreateUnbounded<Func<Task>>(new UnboundedChannelOptions { SingleReader = true });
@@ -45,6 +48,7 @@ internal sealed class HubController
             _subscribedVoice = _subscribedChat = null;
             _guildNames.Clear();
             _channelGuild.Clear();
+            _silentChannels.Clear();
             _channelCache.Clear();
             _guildCache = null;
             _state.Reset();
@@ -355,6 +359,7 @@ internal sealed class HubController
         using var gate = new SemaphoreSlim(ParallelChannelLookups);
         var details = await Task.WhenAll(wanted.Select(async ch =>
         {
+            if (_silentChannels.ContainsKey(ch.Str("id")!)) return (Channel: ch, Detail: (JsonNode?)null);
             try
             {
                 await gate.WaitAsync(deadline.Token);
@@ -371,8 +376,15 @@ internal sealed class HubController
                     timeout: left < ChannelLookupTimeout ? left : ChannelLookupTimeout);
                 return (Channel: ch, Detail: detail);
             }
-            catch (Exception ex) when (ex is DiscordRpcException or TimeoutException)
+            catch (TimeoutException)
             {
+                // A lookup that ran into its own timeout (not the shared deadline) is a channel Discord never answers.
+                if (DateTime.UtcNow - started < ChannelListDeadline) _silentChannels[ch.Str("id")!] = true;
+                return (Channel: ch, Detail: (JsonNode?)null);
+            }
+            catch (DiscordRpcException)
+            {
+                _silentChannels[ch.Str("id")!] = true;
                 return (Channel: ch, Detail: (JsonNode?)null);
             }
             finally
@@ -386,7 +398,7 @@ internal sealed class HubController
         var missing = 0;
         foreach (var (ch, detail) in details)
         {
-            if (detail == null) missing++;
+            if (detail == null && !_silentChannels.ContainsKey(ch.Str("id")!)) missing++; // only "ran out of time" counts as incomplete
             var pos = detail == null ? int.MaxValue : detail.Int("position"); // unknown position: after the known ones, by name
             var item = new JsonObject { ["id"] = ch.Str("id"), ["name"] = ch.Str("name") ?? "" };
             if (ch.Int("type") is 2 or 13)
@@ -399,7 +411,8 @@ internal sealed class HubController
                 text.Add((pos, item));
             }
         }
-        Log.Info($"Kanalliste: {details.Length} Kanäle in {(DateTime.UtcNow - started).TotalMilliseconds:0} ms, {missing} ohne Details.");
+        Log.Info($"Kanalliste: {details.Length} Kanäle in {(DateTime.UtcNow - started).TotalMilliseconds:0} ms, " +
+                 $"{missing} noch ohne Details, {details.Count(d => d.Detail == null) - missing} ohne Antwort von Discord.");
 
         static JsonArray Sorted(List<(int Pos, JsonObject Item)> list) =>
             new(list.OrderBy(c => c.Pos).ThenBy(c => c.Item.Str("name"), StringComparer.CurrentCultureIgnoreCase)
