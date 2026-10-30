@@ -67,8 +67,13 @@ internal sealed class TrayContext : ApplicationContext, IPairingPrompt
         _ = Task.Run(() => UpdateLoopAsync(_cts.Token));
         UpdateTray();
 
-        if (!HubSettings.IsValidClientId(_settings.ClientId) && !startedByAutostart)
-            _ui.BeginInvoke(ShowSetup);
+        var updated = _settings.NoteStartedVersion(HubServer.HubVersion);
+        try { _settings.Save(AppPaths.SettingsFile); }
+        catch (IOException ex) { Log.Warn($"settings.json nicht speicherbar: {ex.Message}"); }
+        if (updated)
+            _ui.BeginInvoke(() => ShowSetup(afterUpdate: true)); // new widget version: offer the re-import right away
+        else if (!HubSettings.IsValidClientId(_settings.ClientId) && !startedByAutostart)
+            _ui.BeginInvoke(() => ShowSetup());
     }
 
     // ---------- tray ----------
@@ -133,10 +138,12 @@ internal sealed class TrayContext : ApplicationContext, IPairingPrompt
 
     // ---------- setup ----------
 
-    private void ShowSetup()
+    private void ShowSetup() => ShowSetup(afterUpdate: false);
+
+    private void ShowSetup(bool afterUpdate)
     {
         if (_openForm is SetupWizard) { _openForm.Activate(); return; }
-        var wizard = new SetupWizard(_settings, _session, SaveClientId);
+        var wizard = new SetupWizard(_settings, _session, SaveClientId, afterUpdate);
         wizard.Completed += (autostart, updates) =>
         {
             _autostartItem.Checked = autostart; // CheckedChanged writes the registry

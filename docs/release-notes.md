@@ -1,6 +1,8 @@
 ## Voicedeck Edge 0.9.3 (Beta)
 
 - **Smoother server sorting:** the server now follows your finger, the others slide aside, and you can move it any distance in one go (the column scrolls along at the edges). In 0.9.2 a server only moved one position at a time on the XENEON EDGE.
+- **Updating is easier:** after installing a new version, the setup assistant opens by itself on the widget step, so you can re-import the widget with one click.
+- Fixed: the update-check option in the assistant was cut off.
 
 **Download:** `VoicedeckEdge-Setup-0.9.3.exe` – install over the previous version and re-import the widget in iCUE (button in the setup assistant).
 

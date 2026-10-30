@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using VoicedeckEdge.Hub.Discord;
 using VoicedeckEdge.Hub.Infrastructure;
+using VoicedeckEdge.Hub.Server;
 
 namespace VoicedeckEdge.Hub.Tray;
 
@@ -30,6 +31,7 @@ internal sealed class SetupWizard : HubForm
     private readonly Control[] _pages;
     private readonly string[] _headings = [Strings.WelcomeHeading, Strings.AppHeading, Strings.ConnectHeading, Strings.WidgetHeading];
     private int _page;
+    private readonly bool _afterUpdate; // opened by the hub after an update: straight to the widget page
 
     // page 2: app
     private readonly TextBox _clientId = new() { Width = 260, PlaceholderText = "Client-ID" };
@@ -43,13 +45,21 @@ internal sealed class SetupWizard : HubForm
     // page 4: widget
     private readonly Label _widgetHint = new() { AutoSize = true, MaximumSize = new Size(ContentWidth, 0), ForeColor = SystemColors.GrayText };
     private readonly CheckBox _autostart = new() { Text = Strings.OptionAutostart, AutoSize = true, MaximumSize = new Size(ContentWidth, 0) };
-    private readonly CheckBox _updates = new() { Text = Strings.OptionUpdates, AutoSize = true, MaximumSize = new Size(ContentWidth, 0) };
+    // AutoSize check boxes clip instead of wrapping: give the long one room for two lines.
+    private readonly CheckBox _updates = new()
+    {
+        Text = Strings.OptionUpdates, AutoSize = false, Size = new Size(ContentWidth, 44),
+        CheckAlign = ContentAlignment.TopLeft, TextAlign = ContentAlignment.TopLeft,
+    };
 
     /// <summary>Raised on "Finish" with (autostart, updateCheck).</summary>
     public event Action<bool, bool>? Completed;
 
-    public SetupWizard(HubSettings settings, DiscordSession session, Action<string> saveClientId) : base(Strings.SetupTitle)
+    public SetupWizard(HubSettings settings, DiscordSession session, Action<string> saveClientId, bool afterUpdate = false)
+        : base(Strings.SetupTitle)
     {
+        _afterUpdate = afterUpdate;
+        if (afterUpdate) _headings[^1] = Strings.UpdatedHeading(HubServer.HubVersion);
         _settings = settings;
         _session = session;
         _saveClientId = saveClientId;
@@ -75,7 +85,7 @@ internal sealed class SetupWizard : HubForm
             _session.StatusChanged -= OnSessionStatus;
             _cts.Cancel();
         };
-        GoTo(0);
+        GoTo(afterUpdate ? _pages.Length - 1 : 0);
     }
 
     // ---------- pages ----------
@@ -160,6 +170,7 @@ internal sealed class SetupWizard : HubForm
     private Control BuildWidget()
     {
         var page = Page();
+        if (_afterUpdate) page.Controls.Add(Para(Strings.UpdatedText));
         page.Controls.Add(Para(Strings.WidgetText));
         var install = new Button { Text = Strings.WidgetInstall, AutoSize = true, Margin = new Padding(0, 8, 0, 4) };
         install.Click += (_, _) => InstallWidget();
@@ -188,7 +199,7 @@ internal sealed class SetupWizard : HubForm
         _content.Controls.Clear();
         _content.Controls.Add(_pages[_page]);
         _heading.Text = _headings[_page];
-        _stepLabel.Text = Strings.StepOf(_page + 1, _pages.Length);
+        _stepLabel.Text = _afterUpdate ? "" : Strings.StepOf(_page + 1, _pages.Length);
         _back.Enabled = _page > 0;
         _next.Text = _page == _pages.Length - 1 ? Strings.Finish : Strings.Next;
         AcceptButton = _next;

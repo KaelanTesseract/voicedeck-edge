@@ -87,6 +87,10 @@ internal static class Strings
         "Click the button to import the widget into iCUE. Then place it on your XENEON EDGE in iCUE (size Medium, Large or XL).\n\n" +
         "On first start this PC asks once “Allow widget?” – click “Allow” there.");
     public static string WidgetInstall => T("Widget zu iCUE hinzufügen", "Add widget to iCUE");
+    public static string UpdatedHeading(string version) => T($"Version {version} ist installiert", $"Version {version} is installed");
+    public static string UpdatedText => T(
+        "Damit iCUE die neue Version nutzt, füge das Widget einmal neu hinzu. Anmeldung, Kopplung und Einstellungen bleiben erhalten.",
+        "To let iCUE use the new version, add the widget once more. Sign-in, pairing and settings are kept.");
     public static string WidgetMissing => T("Das Widget-Paket liegt (noch) nicht neben dem Hub. Es kommt mit dem Installer.", "The widget package is not next to the hub (yet). It comes with the installer.");
     public static string WidgetOpenFailed => T("iCUE hat sich nicht gemeldet. Importiere die Datei in iCUE von Hand: ", "iCUE did not respond. Import the file in iCUE manually: ");
     public static string OptionAutostart => T("Voicedeck Edge Hub mit Windows starten (empfohlen)", "Start Voicedeck Edge Hub with Windows (recommended)");

@@ -98,6 +98,22 @@ public class HubSettingsTests
     [InlineData(null, false)]
     public void Client_id_validation(string? value, bool valid) =>
         Assert.Equal(valid, HubSettings.IsValidClientId(value));
+
+    [Fact]
+    public void A_new_version_on_a_set_up_hub_counts_as_update_once()
+    {
+        var settings = new HubSettings { ClientId = "1234567890123456789", LastVersion = "0.9.2" };
+        Assert.True(settings.NoteStartedVersion("0.9.3"));
+        Assert.False(settings.NoteStartedVersion("0.9.3"));
+        Assert.Equal("0.9.3", settings.LastVersion);
+    }
+
+    [Fact]
+    public void Older_hubs_without_a_stored_version_count_as_updated_but_fresh_installs_do_not()
+    {
+        Assert.True(new HubSettings { ClientId = "1234567890123456789" }.NoteStartedVersion("0.9.3"));
+        Assert.False(new HubSettings().NoteStartedVersion("0.9.3")); // not set up yet: the normal assistant opens
+    }
 }
 
 public class OriginPolicyTests

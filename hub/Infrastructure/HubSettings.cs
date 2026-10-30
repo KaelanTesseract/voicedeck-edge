@@ -7,6 +7,8 @@ internal sealed class HubSettings
 {
     public string? ClientId { get; set; }
     public bool UpdateCheck { get; set; }
+    /// <summary>Hub version of the last start – tells a fresh update apart from a normal start.</summary>
+    public string? LastVersion { get; set; }
 
     private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
 
@@ -25,6 +27,17 @@ internal sealed class HubSettings
     }
 
     public void Save(string path) => File.WriteAllText(path, JsonSerializer.Serialize(this, JsonOptions));
+
+    /// <summary>
+    /// Records the running version. True when an already set-up hub starts a new version for the first
+    /// time: the widget in iCUE should then be re-imported.
+    /// </summary>
+    public bool NoteStartedVersion(string version)
+    {
+        var updated = IsValidClientId(ClientId) && LastVersion != version;
+        LastVersion = version;
+        return updated;
+    }
 
     /// <summary>Discord client IDs are snowflakes: digits only.</summary>
     public static bool IsValidClientId(string? value) =>

@@ -50,6 +50,15 @@ internal static class Program
         string[] names = ["welcome", "discord-app", "connect", "widget"];
         for (var i = 0; i < names.Length; i++)
             wizard.RenderPage(i, Path.Combine(dir, $"wizard-{i + 1}-{names[i]}.png"));
+
+        using var updated = new SetupWizard(settings, session, _ => { }, afterUpdate: true)
+        {
+            StartPosition = FormStartPosition.Manual,
+            Location = new Point(-4000, -4000),
+            ShowInTaskbar = false,
+        };
+        updated.Show();
+        updated.RenderPage(names.Length - 1, Path.Combine(dir, "wizard-after-update.png"));
         return 0;
     }
 #endif
