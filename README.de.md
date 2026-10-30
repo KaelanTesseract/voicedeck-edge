@@ -22,7 +22,7 @@ Kostenlos und Open Source. Kein Konto bei uns, keine Server, kein Tracking.
 | ![Lautstärke pro Person](docs/images/de/m-volume.png) | **Lautstärke für jede Person**<br>Tippe auf jemanden, um ihn lauter oder leiser zu machen (0–200 %) oder nur für dich stummzuschalten. Bei 100 % rastet der Regler ein. |
 | ![Audiogeräte](docs/images/de/m-audio.png) | **Mikrofon und Kopfhörer**<br>Der Knopf *Audio* wechselt Discords Eingabe- und Ausgabegerät und stellt ihre Lautstärke ein – praktisch, wenn du zwischen Headset und Lautsprechern wechselst. |
 | ![Direktnachrichten](docs/images/de/m-direct.png) | **Server, Kanäle und Direktnachrichten**<br>Deine Server in einer Spalte wie in Discord – gedrückt halten zum Verschieben. Tippe auf einen Sprachkanal zum Beitreten, auf einen Textkanal zum Lesen. Rote Zahlen zeigen neue Nachrichten an Servern, Kanälen und Direktnachrichten. |
-| ![Privatmodus](docs/images/de/m-private.png) | **Privatmodus fürs Streamen**<br>Ein Tipp auf das Auge versteckt Chat-Texte, Bilder und Emojis, bis du auf den Chat tippst. |
+| ![Privatmodus](docs/images/de/m-private.png) | **Privatmodus fürs Streamen**<br>Ein Tipp auf das Auge versteckt Chat-Texte, Bilder, Emojis und Reaktionen, bis du auf den Chat tippst. |
 
 **Außerdem dabei**
 
@@ -30,7 +30,7 @@ Kostenlos und Open Source. Kein Konto bei uns, keine Server, kein Tracking.
 - 🎚️ **Audiogeräte** – Mikrofon und Kopfhörer/Lautsprecher für Discord wählen, Eingangs- und Ausgangslautstärke einstellen.
 - 📞 **Kanal verlassen** per Gedrückthalten – kein versehentliches Auflegen.
 - ⭐ **Favoriten** – Kanal lange drücken, dann steht er oben.
-- 🖼️ **Chat mit Bildern und Server-Emojis**, live aktualisiert.
+- 🖼️ **Chat mit Bildern, Server-Emojis und Reaktionen** (❤️ 3 – deine hervorgehoben), live aktualisiert.
 - 🎨 **Dunkel, hell oder deine iCUE-Farben**, eigenes Hintergrundbild, einstellbare Textgröße.
 - 📐 **Drei Größen:** Medium (Tabs), Large (zwei Spalten) und XL (alles nebeneinander).
 

@@ -57,7 +57,7 @@ Discord erlaubt die Steuerung nur über eine *eigene* App. Das klingt technisch,
 - **Kanal verlassen:** „Verlassen“ **gedrückt halten**, bis die rote Füllung durch ist (lässt sich in den Widget-Einstellungen auf einfaches Tippen umstellen).
 - **Direktnachrichten:** Sprechblasen-Symbol ganz oben in der Server-Spalte. Unterhaltungen erscheinen, sobald dir jemand schreibt, während der Hub läuft (Discord meldet DMs nur über Benachrichtigungen; die Liste wird nicht gespeichert). Nach einem Update fragt der Hub einmal nach der neuen Berechtigung „Benachrichtigungen lesen“ – einfach auf das Tray-Symbol klicken und in Discord autorisieren.
 - **Lautstärke einer Person:** auf die Person tippen → Regler 0–200 %, „Für mich stumm“, „Zurücksetzen“.
-- **Privatmodus:** Knopf **„Sichtbar/Privat“ oben im Chat** oder in den Widget-Einstellungen. Chat, Bilder und Emojis bleiben unkenntlich, bis du darauftippst – gut zum Streamen.
+- **Privatmodus:** Knopf **„Sichtbar/Privat“ oben im Chat** oder in den Widget-Einstellungen. Chat, Bilder, Emojis und Reaktionen bleiben unkenntlich, bis du darauftippst – gut zum Streamen.
 - **Hintergrundbild, eigene Farben, Transparenz:** in den Widget-Einstellungen **„Benutzerdefinierter Stil“** einschalten. Ohne ihn übernimmt das Widget die Farben deiner iCUE-Seite. „Design“ kann trotzdem **Dunkel** oder **Hell** erzwingen.
 - **Seiten wechseln auf der Edge (Wischen):** iCUE gibt Wischgesten über Touch-Widgets nicht weiter. Voicedeck Edge erkennt das Wischen selbst und drückt für dich das iCUE-Tastenkürzel zum Umblättern. Einmal einrichten:
   1. In iCUE auf deine **XENEON EDGE** klicken und **Geräte-Einstellungen** öffnen.
@@ -141,7 +141,7 @@ Discord only allows control through *your own* app. It sounds technical but is j
 - **Leave a channel:** **press and hold** "Leave" until the red fill completes (can be switched to a single tap in the widget settings).
 - **Direct messages:** speech-bubble icon at the top of the server column. Conversations appear as soon as someone writes to you while the hub runs (Discord only reports DMs through notifications; the list is not stored). After an update the hub asks once for the new permission "read notifications" – click the tray icon and authorize in Discord.
 - **Someone's volume:** tap the person → slider 0–200 %, "Mute for me", "Reset".
-- **Private mode:** **"Visible/Private" button at the top of the chat** or in the widget settings. Chat, images and emojis stay unreadable until tapped – good for streaming.
+- **Private mode:** **"Visible/Private" button at the top of the chat** or in the widget settings. Chat, images, emojis and reactions stay unreadable until tapped – good for streaming.
 - **Background image, own colours, transparency:** switch on **"Custom Style"** in the widget settings. Without it, the widget uses your iCUE page colours; "Theme" can still force **Dark** or **Light**.
 - **Switching pages on the Edge (swipe):** iCUE does not pass swipes over touch widgets through. Voicedeck Edge detects the swipe itself and presses iCUE's page shortcut for you. Set it up once:
   1. In iCUE, click your **XENEON EDGE** and open **Device settings**.

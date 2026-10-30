@@ -22,7 +22,7 @@ Free and open source. No account with us, no servers, no tracking.
 | ![Volume per person](docs/images/en/m-volume.png) | **Volume for each person**<br>Tap someone to make them louder or quieter (0–200 %) or mute them just for you. The slider clicks into place at 100 %. |
 | ![Audio devices](docs/images/en/m-audio.png) | **Microphone and headphones**<br>The *Audio* button switches Discord's input and output device and sets their volume – handy when you swap between headset and speakers. |
 | ![Direct messages](docs/images/en/m-direct.png) | **Servers, channels and direct messages**<br>Your servers in a column like in Discord – press and hold one to move it. Tap a voice channel to join, a text channel to read it. Red numbers show new messages on servers, channels and direct messages. |
-| ![Private mode](docs/images/en/m-private.png) | **Private mode for streaming**<br>One tap on the eye button hides chat text, pictures and emojis until you tap the chat. |
+| ![Private mode](docs/images/en/m-private.png) | **Private mode for streaming**<br>One tap on the eye button hides chat text, pictures, emojis and reactions until you tap the chat. |
 
 **Also included**
 
@@ -30,7 +30,7 @@ Free and open source. No account with us, no servers, no tracking.
 - 🎚️ **Audio devices** – pick your microphone and headphones/speakers for Discord and set input and output volume.
 - 📞 **Leave the channel** by pressing and holding – no accidental hang-ups.
 - ⭐ **Favourites** – press and hold a channel to pin it at the top.
-- 🖼️ **Chat with pictures and server emojis**, updating live.
+- 🖼️ **Chat with pictures, server emojis and reactions** (❤️ 3 – yours highlighted), updating live.
 - 🎨 **Dark, light or your iCUE colours**, your own background picture, adjustable text size.
 - 📐 **Three sizes:** Medium (tabs), Large (two columns) and XL (everything side by side).
 
