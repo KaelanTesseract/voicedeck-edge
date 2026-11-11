@@ -20,6 +20,7 @@ Kostenlos und Open Source. Kein Konto bei uns, keine Server, kein Tracking.
 |---|---|
 | ![Sprachkanal](docs/images/de/m-voice.png) | **Dein Sprachkanal auf einen Blick**<br>Alle im Kanal mit Bild und Namen. Ein grüner Ring zeigt, wer spricht, rote Symbole zeigen, wer stumm oder taub ist. |
 | ![Lautstärke pro Person](docs/images/de/m-volume.png) | **Lautstärke für jede Person**<br>Tippe auf jemanden, um ihn lauter oder leiser zu machen (0–200 %) oder nur für dich stummzuschalten. Bei 100 % rastet der Regler ein. |
+| ![Soundboard](docs/images/de/m-soundboard.png) | **Soundboard**<br>Der Knopf *Sounds* spielt Discord- und Server-Sounds in deinem Sprachkanal ab. Gedrückt halten heftet einen Sound als Favorit an. |
 | ![Audiogeräte](docs/images/de/m-audio.png) | **Mikrofon und Kopfhörer**<br>Der Knopf *Audio* wechselt Discords Eingabe- und Ausgabegerät und stellt ihre Lautstärke ein – praktisch, wenn du zwischen Headset und Lautsprechern wechselst. |
 | ![Direktnachrichten](docs/images/de/m-direct.png) | **Server, Kanäle und Direktnachrichten**<br>Deine Server in einer Spalte wie in Discord – gedrückt halten zum Verschieben. Tippe auf einen Sprachkanal zum Beitreten, auf einen Textkanal zum Lesen. Rote Zahlen zeigen neue Nachrichten an Servern, Kanälen und Direktnachrichten. |
 | ![Privatmodus](docs/images/de/m-private.png) | **Privatmodus fürs Streamen**<br>Ein Tipp auf das Auge versteckt Chat-Texte, Bilder, Emojis und Reaktionen, bis du auf den Chat tippst. |

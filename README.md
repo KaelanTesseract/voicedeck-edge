@@ -20,6 +20,7 @@ Free and open source. No account with us, no servers, no tracking.
 |---|---|
 | ![Voice channel](docs/images/en/m-voice.png) | **Your voice channel at a glance**<br>Everyone in the channel with avatar and name. A green ring shows who is speaking, red icons show who is muted or deafened. |
 | ![Volume per person](docs/images/en/m-volume.png) | **Volume for each person**<br>Tap someone to make them louder or quieter (0–200 %) or mute them just for you. The slider clicks into place at 100 %. |
+| ![Soundboard](docs/images/en/m-soundboard.png) | **Soundboard**<br>The *Sounds* button plays Discord's sounds and your servers' sounds in your voice channel. Press and hold a sound to pin it as a favourite. |
 | ![Audio devices](docs/images/en/m-audio.png) | **Microphone and headphones**<br>The *Audio* button switches Discord's input and output device and sets their volume – handy when you swap between headset and speakers. |
 | ![Direct messages](docs/images/en/m-direct.png) | **Servers, channels and direct messages**<br>Your servers in a column like in Discord – press and hold one to move it. Tap a voice channel to join, a text channel to read it. Red numbers show new messages on servers, channels and direct messages. |
 | ![Private mode](docs/images/en/m-private.png) | **Private mode for streaming**<br>One tap on the eye button hides chat text, pictures, emojis and reactions until you tap the chat. |

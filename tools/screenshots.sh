@@ -37,6 +37,7 @@ for lang in en de; do
   shot "$lang" m-voice          840  696 ""
   shot "$lang" m-volume         840  696 "&popup=Robin"
   shot "$lang" m-audio          840  696 "&popup=audio"
+  shot "$lang" m-soundboard     840  696 "&popup=soundboard"
   shot "$lang" m-direct         840  696 "&tab=channels&guild=dms"
   shot "$lang" m-unread-hints   840  696 "&tab=channels&many=1"
   shot "$lang" m-private        840  696 "&tab=chat&private=1"
