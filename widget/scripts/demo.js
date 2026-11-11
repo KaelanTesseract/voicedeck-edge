@@ -98,6 +98,18 @@ var VoicedeckDemo = (function () {
 
   function guilds() { return { guilds: GUILDS }; }
 
+  function soundboard() {
+    var builtIn = [['1', 'quack', '🦆'], ['2', 'airhorn', '📯'], ['3', 'cricket', '🦗'], ['4', 'golf clap', '👏'], ['5', 'sad horn', '🎺'], ['6', 'ba dum tss', '🥁']];
+    var sounds = builtIn.map(function (b) {
+      return { id: b[0], guildId: '0', guildName: null, name: b[1], emoji: b[2], emojiImage: null, available: true };
+    });
+    [['400000000000000001', 'gg', '🏆'], ['400000000000000002', 'let\'s go', '🚀'], ['400000000000000003', 'bonk', '🔨'], ['400000000000000004', 'drum roll', '🥁']].forEach(function (s) {
+      sounds.push({ id: s[0], guildId: '300000000000000001', guildName: 'Game Night', name: s[1], emoji: s[2], emojiImage: null, available: true });
+    });
+    sounds.push({ id: '400000000000000011', guildId: '300000000000000002', guildName: 'Maker Space', name: 'printer done', emoji: '🖨️', emojiImage: null, available: false });
+    return { sounds: sounds };
+  }
+
   function channels(guildId) {
     var c = CHANNELS[guildId] || { voice: [], text: [] };
     return { guildId: guildId, voice: c.voice, text: c.text };
@@ -144,5 +156,5 @@ var VoicedeckDemo = (function () {
       found.channel.id === '200000000000000001' ? snapshot().voice.members.slice(1) : []);
   }
 
-  return { snapshot: snapshot, guilds: guilds, channels: channels, chat: chat, join: join };
+  return { snapshot: snapshot, guilds: guilds, channels: channels, chat: chat, join: join, soundboard: soundboard };
 })();

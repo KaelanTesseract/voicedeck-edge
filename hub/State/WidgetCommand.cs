@@ -13,7 +13,8 @@ internal sealed record WidgetCommand(
     bool? Mute = null,
     string? Mode = null,
     bool? Next = null,
-    string? DeviceId = null)
+    string? DeviceId = null,
+    string? SoundId = null)
 {
     public static readonly IReadOnlySet<string> KnownOps = new HashSet<string>
     {
@@ -22,6 +23,7 @@ internal sealed record WidgetCommand(
         "guilds.list", "channels.list", "chat.open", "chat.close",
         "edge.page",
         "audio.setInput", "audio.setOutput", "audio.setInputVolume", "audio.setOutputVolume",
+        "soundboard.list", "soundboard.play",
     };
 
     /// <summary>Validates a widget message strictly; throws <see cref="OpException"/> on anything unexpected.</summary>
@@ -40,6 +42,10 @@ internal sealed record WidgetCommand(
             "user.setMute" => new WidgetCommand(op, UserId: Snowflake(msg, "userId"), Mute: Flag(msg, "mute")),
             "user.reset" => new WidgetCommand(op, UserId: Snowflake(msg, "userId")),
             "audio.setInput" or "audio.setOutput" => new WidgetCommand(op, DeviceId: DeviceIdOf(msg)),
+            // built-in sounds belong to guild "0"
+            "soundboard.play" => new WidgetCommand(op,
+                GuildId: msg.Str("guildId") is "0" ? "0" : Snowflake(msg, "guildId"),
+                SoundId: Soundboard.IsSoundId(msg.Str("soundId")) ? msg.Str("soundId") : throw new OpException("invalid_args")),
             "audio.setInputVolume" => new WidgetCommand(op, Volume: Math.Min(ParseVolume(msg), 100)),
             "audio.setOutputVolume" => new WidgetCommand(op, Volume: ParseVolume(msg)),
             "edge.page" => new WidgetCommand(op, Next: msg.Str("dir") switch

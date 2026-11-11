@@ -182,7 +182,9 @@ function applyDemoOptions() {
   if (q.get('guild') === 'dms') saveStore({ guildId: '@dms' });
   if (q.get('many') === '1') demoManyServers();
   var popup = q.get('popup');
-  if (popup === 'audio') {
+  if (popup === 'soundboard') {
+    setTimeout(openSoundboard, 50);
+  } else if (popup === 'audio') {
     if (q.get('side')) AudioUi.side = q.get('side');
     setTimeout(openAudio, 50);
   } else if (popup) {
@@ -252,6 +254,7 @@ function render() {
   renderControls();
   syncPopup();
   syncAudio();
+  if (Soundboard.open) renderSoundboard();
   renderChannels();
   renderChat();
   ensureChannelsLoaded();
@@ -464,6 +467,7 @@ function renderControls() {
   setControl('btn-deaf', { icon: s.deaf ? 'i-headphones-off' : 'i-headphones', label: s.deaf ? t('undeafen') : t('deafen'), on: s.deaf });
   setControl('btn-mode', { icon: ptt ? 'i-ptt' : 'i-wave', label: ptt ? t('pushToTalk') : t('voiceActivity'), accent: ptt });
   setControl('btn-audio', { icon: 'i-sliders', label: t('audio'), disabled: !s.input && !s.output });
+  setControl('btn-soundboard', { icon: 'i-soundboard', label: t('soundboardButton') });
 
   // Leave: label exists twice (base + the copy inside the hold fill), so the button never changes width.
   var leave = $('btn-leave');
@@ -549,6 +553,7 @@ function bindControls() {
   });
 
   bindAudio();
+  bindSoundboard();
 
   // member popup
   $('popup-close').addEventListener('click', closePopup);

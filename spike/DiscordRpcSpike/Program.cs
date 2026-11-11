@@ -109,6 +109,43 @@ try
     report["grantedScopes"] = authn["data"]?["scopes"]?.DeepClone();
     Say("Angemeldet. Lese Struktur der Daten …");
 
+    if (args.Contains("--soundboard"))
+    {
+        // Is the soundboard reachable over local RPC? Records only success, error code and data structure.
+        var sounds = await ipc.CommandAsync("GET_SOUNDBOARD_SOUNDS", new JsonObject(), TimeSpan.FromSeconds(10));
+        var list = sounds["data"] as JsonArray ?? sounds["data"]?["sounds"] as JsonArray;
+        steps["soundboard"] = new JsonObject
+        {
+            ["get"] = Result(sounds, includeShape: true),
+            ["count"] = list?.Count,
+            ["guildIdKinds"] = list == null ? null : new JsonObject(list.OfType<JsonObject>()
+                .GroupBy(x => x["guild_id"]?.GetValue<string>() is "0" or "DEFAULT" ? x["guild_id"]!.GetValue<string>() : "server")
+                .Select(g => KeyValuePair.Create(g.Key, (JsonNode?)g.Count()))),
+        };
+        if (args.Contains("--play") && list != null)
+        {
+            // Plays one of Discord's built-in sounds (guild_id "0"/"DEFAULT"), preferably "quack". Needs a joined voice channel.
+            var builtIn = list.OfType<JsonObject>().Where(s => s["guild_id"]?.GetValue<string>() is "0" or "DEFAULT").ToList();
+            var pick = builtIn.FirstOrDefault(s => s["name"]?.GetValue<string>() == "quack") ?? builtIn.FirstOrDefault();
+            if (pick != null)
+            {
+                var play = await ipc.CommandAsync("PLAY_SOUNDBOARD_SOUND", new JsonObject
+                {
+                    ["guild_id"] = pick["guild_id"]!.DeepClone(),
+                    ["sound_id"] = pick["sound_id"]!.DeepClone(),
+                }, TimeSpan.FromSeconds(10));
+                steps["soundboardPlay"] = Result(play, includeShape: true);
+                steps["soundboardPlayedBuiltIn"] = pick["name"]?.DeepClone();
+            }
+            else
+            {
+                steps["soundboardPlay"] = "kein eingebauter Sound gefunden";
+            }
+        }
+        accessToken = null; // no revoke: same Discord app and account as the real hub
+        return Finish(0, IsError(sounds) ? "Soundboard nicht erreichbar." : $"Soundboard erreichbar ({list?.Count ?? 0} Sounds).");
+    }
+
     if (args.Contains("--reactions"))
     {
         // Do messages from GET_CHANNEL carry reactions? Records only structure and counts – no texts, names or IDs.

@@ -27,6 +27,7 @@ Kostenlos und Open Source. Kein Konto bei uns, keine Server, kein Tracking.
 **Außerdem dabei**
 
 - 🎙️ **Stumm, Taub, Sprachaktivierung / Push to Talk** – große Knöpfe, die unter dem Finger einsinken.
+- 🔊 **Soundboard** – der Knopf *Sounds* spielt Discord- und Server-Sounds im Sprachkanal ab; Sound gedrückt halten macht ihn zum Favoriten.
 - 🎚️ **Audiogeräte** – Mikrofon und Kopfhörer/Lautsprecher für Discord wählen, Eingangs- und Ausgangslautstärke einstellen.
 - 📞 **Kanal verlassen** per Gedrückthalten – kein versehentliches Auflegen.
 - ⭐ **Favoriten** – Kanal lange drücken, dann steht er oben.
@@ -95,7 +96,7 @@ Tray-Symbol → **Abmelden und alle Daten löschen** entfernt jederzeit alles. D
 ## Gut zu wissen
 
 - Das Widget **zeigt an und steuert** – Nachrichten schreiben oder senden kannst du damit nicht.
-- Kamera, Bildschirmübertragung und Soundboard werden nicht unterstützt.
+- Kamera und Bildschirmübertragung werden nicht unterstützt.
 - Push to Talk: Das Widget schaltet den Modus um, die Taste drücken kann es nicht.
 - Kanal-Kategorien können nicht angezeigt werden (Discord gibt sie an lokale Apps nicht heraus).
 - Direktnachrichten erscheinen, sobald dir jemand schreibt, während der Hub läuft; nach einem Neustart ist die Liste leer.

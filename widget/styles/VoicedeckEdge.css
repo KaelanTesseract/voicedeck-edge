@@ -312,7 +312,7 @@ button {
 
 /* ---------- controls ---------- */
 
-.controls { grid-area: controls; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--gap); }
+.controls { grid-area: controls; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--gap); }
 
 .control {
   height: var(--control-height);
@@ -422,6 +422,35 @@ button {
 .popup-label { font-size: var(--font-body); color: var(--muted); }
 .popup-label strong { color: var(--text-color); }
 .popup-actions { display: flex; gap: var(--gap); }
+
+/* soundboard: tiles grouped like in Discord */
+.popup-soundboard { width: min(calc(var(--u) * 150), 94%); max-height: 94%; gap: calc(var(--u) * 1.6); }
+.popup-soundboard .pane-hint:empty { display: none; }
+.soundboard-list { min-height: 0; flex: 1 1 auto; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; }
+.soundboard-list::-webkit-scrollbar { display: none; }
+.sound-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--u) * 22), 1fr)); gap: calc(var(--u) * 1.2); }
+.sound-tile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.2);
+  min-height: calc(var(--u) * 10);
+  padding: calc(var(--u) * 1.2) calc(var(--u) * 1.6);
+  border-radius: var(--radius-small);
+  background: var(--surface);
+  overflow: hidden;
+  text-align: left;
+}
+.sound-emoji { flex: none; font-size: calc(var(--font-body) * 1.25); line-height: 1; }
+.sound-emoji .emoji { width: calc(var(--font-body) * 1.3); height: calc(var(--font-body) * 1.3); }
+.sound-name { min-width: 0; font-size: var(--font-small); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sound-star { position: absolute; top: calc(var(--u) * 0.6); right: calc(var(--u) * 0.6); width: calc(var(--u) * 2.6); height: calc(var(--u) * 2.6); color: var(--warning); }
+.sound-tile.is-unavailable { opacity: 0.4; }
+.sound-tile.is-playing { animation: sound-pulse 600ms ease-out; }
+@keyframes sound-pulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent-color) 70%, transparent); background: color-mix(in srgb, var(--accent-color) 35%, var(--surface)); }
+  100% { box-shadow: 0 0 0 calc(var(--u) * 2) transparent; }
+}
 
 /* audio devices: input/output tabs, volume and the device list */
 .popup-audio { max-height: 92%; gap: calc(var(--u) * 2.4); }

@@ -27,7 +27,7 @@ Sonst nichts: keine Telemetrie, keine Analyse, keine Absturzberichte, keine Werb
 | Client-ID deiner Discord-App, Einstellungen, zuletzt gestartete Version (damit der Hub nach einem Update den Assistenten öffnet) | `%APPDATA%\VoicedeckEdge\settings.json` | bis Löschen/Deinstallation |
 | Gekoppelte Widgets | `%APPDATA%\VoicedeckEdge\pairings.json` – nur ein Prüfwert (Hash), nie der Schlüssel selbst | bis du die Kopplung aufhebst |
 | Technisches Protokoll | `%LOCALAPPDATA%\VoicedeckEdge\logs\` – ohne Namen, IDs, Nachrichten oder Tokens | höchstens 7 Tage |
-| Im Widget (iCUE) | Kopplungsschlüssel, angeheftete Kanäle (ID, Name), deine Server-Reihenfolge (nur Server-IDs), zuletzt gewählter Server und Chat | bis du das Widget entfernst |
+| Im Widget (iCUE) | Kopplungsschlüssel, angeheftete Kanäle (ID, Name), deine Server-Reihenfolge (nur Server-IDs), Soundboard-Favoriten (nur IDs), zuletzt gewählter Server und Chat | bis du das Widget entfernst |
 
 **Nie gespeichert** werden Chat-Nachrichten, Direktnachrichten, Bilder, Namen und Profilbilder anderer Personen oder Teilnehmerlisten. Sie liegen nur im Arbeitsspeicher, solange sie angezeigt werden.
 
@@ -72,7 +72,7 @@ Nothing else: no telemetry, no analytics, no crash reports, no ads, no tracking.
 | Client ID of your Discord app, settings, last started version (so the hub can open the assistant after an update) | `%APPDATA%\VoicedeckEdge\settings.json` | until deleted/uninstalled |
 | Paired widgets | `%APPDATA%\VoicedeckEdge\pairings.json` – only a hash, never the key itself | until you unpair |
 | Technical log | `%LOCALAPPDATA%\VoicedeckEdge\logs\` – no names, IDs, messages or tokens | at most 7 days |
-| Inside the widget (iCUE) | pairing key, pinned channels (ID, name), your server order (server IDs only), last server and chat | until you remove the widget |
+| Inside the widget (iCUE) | pairing key, pinned channels (ID, name), your server order (server IDs only), soundboard favourites (IDs only), last server and chat | until you remove the widget |
 
 **Never stored:** chat messages, direct messages, images, other people's names and avatars, member lists. They exist only in memory while shown.
 

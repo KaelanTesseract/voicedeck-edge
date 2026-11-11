@@ -27,6 +27,7 @@ Free and open source. No account with us, no servers, no tracking.
 **Also included**
 
 - 🎙️ **Mute, deafen, voice activity / push to talk** – big buttons that sink under your finger.
+- 🔊 **Soundboard** – the *Sounds* button plays Discord's sounds and your servers' sounds in the voice channel; press and hold a sound to make it a favourite.
 - 🎚️ **Audio devices** – pick your microphone and headphones/speakers for Discord and set input and output volume.
 - 📞 **Leave the channel** by pressing and holding – no accidental hang-ups.
 - ⭐ **Favourites** – press and hold a channel to pin it at the top.
@@ -95,7 +96,7 @@ Tray icon → **Sign out and delete all data** removes everything at any time. D
 ## Good to know
 
 - The widget **shows and controls** – you can't type or send messages with it.
-- Camera, screen sharing and the soundboard are not supported.
+- Camera and screen sharing are not supported.
 - Push to talk: the widget switches the mode; it can't press the key for you.
 - Channel categories can't be shown (Discord doesn't provide them to local apps).
 - Direct messages appear once someone writes to you while the hub runs; the list is not kept after a restart.

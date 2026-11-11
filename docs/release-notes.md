@@ -1,3 +1,11 @@
+## Voicedeck Edge 0.9.8 (Beta)
+
+- **Soundboard:** new *Sounds* button in the control bar. Play Discord's sounds and your servers' sounds in the voice channel – grouped like in Discord, favourites at the top (press and hold a sound), unavailable sounds greyed out.
+
+**Download:** `VoicedeckEdge-Setup-0.9.8.exe` – install over the previous version; the setup assistant then opens on the widget step so you can re-import the widget with one click.
+
+---
+
 ## Voicedeck Edge 0.9.7 (Beta)
 
 - **Never miss new messages further down:** when a server or channel with new messages is scrolled out of view, a red pill at the top or bottom edge of the list shows how many – tap it to jump there.

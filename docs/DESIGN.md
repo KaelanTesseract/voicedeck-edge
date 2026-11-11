@@ -82,6 +82,7 @@ Jede Webseite im Browser könnte `ws://localhost:47820` ansprechen. Darum:
 { "op": "guilds.list" } | { "op": "channels.list", "guildId": "…" } | { "op": "chat.open", "channelId": "…" } | { "op": "chat.close" }
 { "op": "audio.setInput", "deviceId": "…" } | { "op": "audio.setOutput", "deviceId": "…" }      // nur Geräte aus Discords aktueller Liste
 { "op": "audio.setInputVolume", "volume": 80 } | { "op": "audio.setOutputVolume", "volume": 150 } // Eingang 0–100, Ausgang 0–200
+{ "op": "soundboard.list" } | { "op": "soundboard.play", "guildId": "0|…", "soundId": "…" }        // Sounds anzeigen / abspielen
 { "op": "edge.page", "dir": "next|prev" }                                                       // drückt das iCUE-Kürzel (Wischen)
 
 // Hub → Widget
@@ -312,6 +313,6 @@ voicedeck-edge/
 - **Kanal-Reihenfolge und Kategorien (Spike-Ergebnis):** `GET_CHANNELS` liefert nur id, name, type. `GET_CHANNEL` liefert `position`, aber **kein `parent_id`** – Kategorien (Typ 4) sind zwar in der Liste, aber Kanäle lassen sich ihnen nicht zuordnen. Lösung v1: Hub fragt beim Öffnen eines Servers `GET_CHANNEL` je Kanal ab (gecacht im Speicher), Liste zeigt **Sprachkanäle und Textkanäle als zwei Gruppen, jeweils nach `position` sortiert**. Keine Kategorie-Überschriften.
 - **Gute Nachricht für Voice:** `voice_states` enthält pro Person bereits `volume`, lokales `mute`, `nick`, Avatar und Mute/Deaf-Status – alles, was Bereich A braucht.
 - **Kamera / Bildschirm teilen:** Bewusst nicht in v1 – RPC bietet dafür keine zuverlässige Steuerung.
-- **Soundboard:** Nicht in v1 (nicht gewünscht).
+- **Soundboard:** seit 0.9.8. `GET_SOUNDBOARD_SOUNDS` und `PLAY_SOUNDBOARD_SOUND` (`guild_id`, `sound_id`; eingebaute Sounds: Guild `"0"`, kurze IDs) funktionieren mit den vorhandenen Scopes – live getestet 2026-11-11. Der Hub spielt nur Sounds aus der zuletzt gelieferten Liste.
 - **Discord-Änderungen:** RPC ist offiziell „private beta“ und kann sich ändern. Hub kapselt alles, Widget bleibt unberührt.
 - **Push to Talk:** Umschalten des Modus geht; die PTT-Taste selbst kann das Widget nicht drücken.

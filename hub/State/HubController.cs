@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Channels;
 using VoicedeckEdge.Hub.Discord;
@@ -31,6 +32,8 @@ internal sealed class HubController
     // Read-only lookups (guild/channel lists) run beside the worker, so these caches are concurrent.
     private readonly ConcurrentDictionary<string, string> _guildNames = new();
     private readonly ConcurrentDictionary<string, string> _channelGuild = new(); // "" = direct message
+    // guild:sound pairs from the last soundboard list: only these may be played
+    private volatile HashSet<string> _knownSounds = [];
     private readonly ConcurrentDictionary<string, (DateTime At, JsonNode Data)> _channelCache = new();
     private volatile Tuple<DateTime, JsonNode>? _guildCache;
     private volatile DiscordIpc? _ipc;
@@ -98,6 +101,7 @@ internal sealed class HubController
                 {
                     "guilds.list" => await GuildsAsync(_ipc ?? throw new OpException("not_ready")),
                     "channels.list" => await ChannelsAsync(_ipc ?? throw new OpException("not_ready"), cmd.GuildId!),
+                    "soundboard.list" => await SoundboardAsync(_ipc ?? throw new OpException("not_ready")),
                     _ => await ExecuteOnWorkerAsync(cmd),
                 });
             }
@@ -115,7 +119,7 @@ internal sealed class HubController
                 tcs.TrySetException(new OpException("not_ready"));
             }
         };
-        if (cmd.Op is "guilds.list" or "channels.list") _ = Task.Run(work);
+        if (cmd.Op is "guilds.list" or "channels.list" or "soundboard.list") _ = Task.Run(work);
         else Enqueue(work);
         return tcs.Task;
     }
@@ -268,6 +272,11 @@ internal sealed class HubController
                 {
                     [input ? "input" : "output"] = new JsonObject { ["device_id"] = cmd.DeviceId },
                 });
+            case "soundboard.play":
+                if (!_knownSounds.Contains($"{cmd.GuildId}:{cmd.SoundId}")) throw new OpException("invalid_args");
+                await ipc.CommandAsync("PLAY_SOUNDBOARD_SOUND", new JsonObject { ["guild_id"] = cmd.GuildId, ["sound_id"] = cmd.SoundId });
+                return null;
+
             case "audio.setInputVolume":
                 return await SetVoiceSettingsAsync(ipc, new JsonObject { ["input"] = new JsonObject { ["volume"] = cmd.Volume } });
             case "audio.setOutputVolume":
@@ -318,6 +327,15 @@ internal sealed class HubController
         if (mute != null) args["mute"] = mute;
         await ipc.CommandAsync("SET_USER_VOICE_SETTINGS", args);
         _state.UpdateMemberLocal(userId, volume, mute);
+    }
+
+    /// <summary>Soundboard sounds with their server names (memory only, asked fresh each time the widget opens it).</summary>
+    private async Task<JsonNode> SoundboardAsync(DiscordIpc ipc)
+    {
+        if (_guildNames.IsEmpty) await GuildsAsync(ipc); // fills the server names used to group the sounds
+        var sounds = Soundboard.Map(await ipc.CommandAsync("GET_SOUNDBOARD_SOUNDS"), id => _guildNames.TryGetValue(id, out var n) ? n : null);
+        _knownSounds = sounds.Select(s => $"{s.GuildId}:{s.Id}").ToHashSet();
+        return new JsonObject { ["sounds"] = JsonSerializer.SerializeToNode(sounds, StateStore.JsonOptions) };
     }
 
     private async Task<JsonNode> GuildsAsync(DiscordIpc ipc)

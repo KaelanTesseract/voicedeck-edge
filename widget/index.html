@@ -105,6 +105,7 @@
         <button class="control" id="btn-deaf"><svg class="icon" aria-hidden="true"><use href="#i-headphones" /></svg><span></span></button>
         <button class="control" id="btn-mode"><svg class="icon" aria-hidden="true"><use href="#i-wave" /></svg><span></span></button>
         <button class="control" id="btn-audio"><svg class="icon" aria-hidden="true"><use href="#i-sliders" /></svg><span></span></button>
+        <button class="control" id="btn-soundboard"><svg class="icon" aria-hidden="true"><use href="#i-soundboard" /></svg><span></span></button>
         <button class="control control-leave" id="btn-leave">
           <span class="leave-face"><svg class="icon" aria-hidden="true"><use href="#i-leave" /></svg><span class="leave-label"></span></span>
           <span class="leave-face leave-done" aria-hidden="true"><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg></span>
@@ -126,6 +127,17 @@
 
     <div class="page-hint" id="page-hint" aria-hidden="true"><svg class="icon"><use href="#i-chevron" /></svg></div>
     <div class="lightbox" id="lightbox" hidden><img alt="" id="lightbox-img" /></div>
+
+    <div class="popup-backdrop" id="soundboard-popup" hidden>
+      <div class="popup popup-soundboard" role="dialog">
+        <div class="popup-head">
+          <span class="popup-name" id="soundboard-title"></span>
+          <button class="popup-close" id="soundboard-close" aria-label="close"><svg class="icon" aria-hidden="true"><use href="#i-close" /></svg></button>
+        </div>
+        <p class="pane-hint" id="soundboard-hint"></p>
+        <div class="soundboard-list" id="soundboard-list"></div>
+      </div>
+    </div>
 
     <div class="popup-backdrop" id="audio-popup" hidden>
       <div class="popup popup-audio" role="dialog">
@@ -184,6 +196,7 @@
     <symbol id="i-dm" viewBox="0 0 24 24"><path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H9l-4.5 3.5V17H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z" fill="currentColor"/></symbol>
     <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M5 4v16M12 4v16M19 4v16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="2.5" y="13" width="5" height="3.4" rx="1.2" fill="currentColor"/><rect x="9.5" y="6.5" width="5" height="3.4" rx="1.2" fill="currentColor"/><rect x="16.5" y="11" width="5" height="3.4" rx="1.2" fill="currentColor"/></symbol>
+    <symbol id="i-soundboard" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2" fill="currentColor"/><rect x="13" y="3" width="8" height="8" rx="2" fill="currentColor" opacity="0.55"/><rect x="3" y="13" width="8" height="8" rx="2" fill="currentColor" opacity="0.55"/><path d="M15 14.5v5.2a1.8 1.8 0 1 1-1.2-1.7V13l6-1.2v6.4a1.8 1.8 0 1 1-1.2-1.7v-3.5z" fill="currentColor"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
   </svg>
 
@@ -195,6 +208,7 @@
   <script src="scripts/page-swipe.js"></script>
   <script src="scripts/channels.js"></script>
   <script src="scripts/chat.js"></script>
+  <script src="scripts/soundboard.js"></script>
   <script src="scripts/app.js"></script>
 </body>
 </html>
